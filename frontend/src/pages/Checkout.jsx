@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Button, List, message, Modal, Form, Input, Select } from "antd";
+import { Button, List, message, Modal, Form, Input, Select, Card, Row, Col, Space } from "antd";
 import axios from "axios";
 import { AuthContext } from "../Contexts/AuthContext";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -22,6 +22,7 @@ export default function Checkout() {
   const location = useLocation();
   const selectedItemIds = location.state?.selectedItemIds || [];
 
+  // Your existing useEffect and fetch functions remain the same
   useEffect(() => {
     if (!isLoggedIn) {
       message.error("Please log in to proceed to checkout!");
@@ -176,13 +177,6 @@ export default function Checkout() {
     }
   };
 
-  const pageStyle = {
-    fontFamily: "Arial, sans-serif",
-    padding: "20px",
-    maxWidth: "600px",
-    margin: "0 auto",
-  };
-
   if (!isLoggedIn) return null;
 
   const selectedCartItems = cart?.items?.filter((item) =>
@@ -190,107 +184,93 @@ export default function Checkout() {
   ) || [];
 
   return (
-    <div style={pageStyle}>
-      <h2>Checkout</h2>
+    <div style={{ padding: "20px", maxWidth: "800px", margin: "0 auto" }}>
+      <h2 style={{ textAlign: "center", marginBottom: "20px" }}>Checkout</h2>
+
       {loading ? (
-        <p>Loading...</p>
+        <p style={{ textAlign: "center" }}>Loading...</p>
       ) : selectedCartItems.length > 0 ? (
-        <>
+        <Row gutter={[16, 16]}>
+          {/* Shipping Address Section */}
           {userAddress && (
-            <div style={{ marginBottom: "20px" }}>
-              <h3>Shipping Address</h3>
-              <p>
-                <strong>Email:</strong> {user?.email || "Not provided"}
-              </p>
-              <p>
-                <strong>Name:</strong> {userAddress.name}
-              </p>
-              <p>
-                <strong>Phone:</strong> {userAddress.phone}
-              </p>
-              <p>
-                <strong>Address:</strong> {userAddress.specificAddress}, {userAddress.ward}, {userAddress.district}, {userAddress.city}
-              </p>
-              <Button onClick={() => setIsModalVisible(true)}>
-                Change Address
-              </Button>
-            </div>
+            <Col xs={24} md={12}>
+              <Card title="Shipping Address" style={{ width: "100%" }}>
+                <Space direction="vertical">
+                  <p><strong>Email:</strong> {user?.email || "Not provided"}</p>
+                  <p><strong>Name:</strong> {userAddress.name}</p>
+                  <p><strong>Phone:</strong> {userAddress.phone}</p>
+                  <p>
+                    <strong>Address:</strong> {userAddress.specificAddress}, {userAddress.ward}, {userAddress.district}, {userAddress.city}
+                  </p>
+                  <Button type="dashed" onClick={() => setIsModalVisible(true)}>
+                    Change Address
+                  </Button>
+                </Space>
+              </Card>
+            </Col>
           )}
 
-          <List
-            dataSource={selectedCartItems}
-            renderItem={(item) => (
-              <List.Item>
-                <div style={{ width: "100%" }}>
-                  <strong>
-                    {item.productId && item.productId.name
-                      ? item.productId.name
-                      : "Unknown Product"}
-                  </strong>{" "}
-                  - $
-                  {item.productId && item.productId.price
-                    ? item.productId.price
-                    : "N/A"}{" "}
-                  x {item.quantity}
-                </div>
-              </List.Item>
-            )}
-          />
-          <p>
-            <strong>
-              Total: $
-              {selectedCartItems.reduce(
-                (sum, item) => sum + (item.productId?.price || 0) * item.quantity,
-                0
-              )}
-            </strong>
-          </p>
-          <Button
-            type="primary"
-            onClick={handlePlaceOrder}
-            disabled={loading}
-            style={{ marginTop: "10px" }}
-          >
-            Place Order
-          </Button>
-        </>
+          {/* Cart Items Section */}
+          <Col xs={24} md={12}>
+            <Card title="Your Order" style={{ width: "100%" }}>
+              <List
+                dataSource={selectedCartItems}
+                renderItem={(item) => (
+                  <List.Item>
+                    <Space>
+                      <strong>
+                        {item.productId?.name || "Unknown Product"}
+                      </strong>
+                      <span>
+                        ${item.productId?.price || "N/A"} x {item.quantity}
+                      </span>
+                    </Space>
+                  </List.Item>
+                )}
+              />
+              <p style={{ textAlign: "right", fontSize: "16px" }}>
+                <strong>Total: ${selectedCartItems.reduce(
+                  (sum, item) => sum + (item.productId?.price || 0) * item.quantity,
+                  0
+                )}</strong>
+              </p>
+              <Button
+                type="primary"
+                size="large"
+                onClick={handlePlaceOrder}
+                loading={loading}
+                block
+              >
+                Place Order
+              </Button>
+            </Card>
+          </Col>
+        </Row>
       ) : (
-        <p>No items selected for checkout.</p>
+        <p style={{ textAlign: "center" }}>No items selected for checkout.</p>
       )}
 
+      {/* Address Modal */}
       <Modal
-        title="New Address"
+        title="Add New Address"
         open={isModalVisible}
         onOk={handleModalOk}
         onCancel={handleModalCancel}
-        okText="Complete"
-        cancelText="Back"
-        okButtonProps={{ style: { background: "#ff4d4f", borderColor: "#ff4d4f" } }}
+        okText="Save & Proceed"
+        cancelText="Cancel"
+        okButtonProps={{ loading: loading }}
       >
         <Form form={form} layout="vertical">
-          <Form.Item
-            name="name"
-            label="Name"
-            rules={[{ required: true, message: "Please enter your name!" }]}
-          >
+          <Form.Item name="name" label="Name" rules={[{ required: true, message: "Please enter your name!" }]}>
             <Input placeholder="Enter your name" />
           </Form.Item>
-          <Form.Item
-            name="phone"
-            label="Phone Number"
-            rules={[{ required: true, message: "Please enter your phone number!" }]}
-          >
+          <Form.Item name="phone" label="Phone Number" rules={[{ required: true, message: "Please enter your phone number!" }]}>
             <Input placeholder="Enter your phone number" />
           </Form.Item>
-          <Form.Item
-            name="city"
-            label="City"
-            rules={[{ required: true, message: "Please select your city!" }]}
-          >
+          <Form.Item name="city" label="City" rules={[{ required: true, message: "Please select your city!" }]}>
             <Select
               showSearch
               placeholder="Select your city"
-              optionFilterProp="children"
               onChange={(value) => {
                 const city = cities.find((c) => c.name === value);
                 setSelectedCity(city.code);
@@ -307,15 +287,10 @@ export default function Checkout() {
               ))}
             </Select>
           </Form.Item>
-          <Form.Item
-            name="district"
-            label="District"
-            rules={[{ required: true, message: "Please select your district!" }]}
-          >
+          <Form.Item name="district" label="District" rules={[{ required: true, message: "Please select your district!" }]}>
             <Select
               showSearch
               placeholder="Select your district"
-              optionFilterProp="children"
               onChange={(value) => {
                 const district = districts.find((d) => d.name === value);
                 setSelectedDistrict(district.code);
@@ -333,15 +308,10 @@ export default function Checkout() {
               ))}
             </Select>
           </Form.Item>
-          <Form.Item
-            name="ward"
-            label="Ward"
-            rules={[{ required: true, message: "Please select your ward!" }]}
-          >
+          <Form.Item name="ward" label="Ward" rules={[{ required: true, message: "Please select your ward!" }]}>
             <Select
               showSearch
               placeholder="Select your ward"
-              optionFilterProp="children"
               filterOption={(input, option) =>
                 option.children.toLowerCase().includes(input.toLowerCase())
               }
@@ -354,11 +324,7 @@ export default function Checkout() {
               ))}
             </Select>
           </Form.Item>
-          <Form.Item
-            name="specificAddress"
-            label="Specific Address"
-            rules={[{ required: true, message: "Please enter your specific address!" }]}
-          >
+          <Form.Item name="specificAddress" label="Specific Address" rules={[{ required: true, message: "Please enter your specific address!" }]}>
             <Input placeholder="Enter your specific address" />
           </Form.Item>
         </Form>

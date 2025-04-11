@@ -18,7 +18,6 @@ const userSchema = new mongoose.Schema({
     ward: { type: String },
     specificAddress: { type: String },
   },
-  gender: { type: String, enum: ["Male", "Female", "Other"] },
 });
 
 module.exports = mongoose.model("User", userSchema);

@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
 const Cart = require("../models/cart");
+const Product = require("../models/product"); // Import Product model
 const authenticateToken = require("../middleware/auth");
 
 async function fetchCart(userId) {
@@ -28,6 +29,19 @@ router.post("/add", authenticateToken, async (req, res) => {
       return res.status(400).json({ message: "Quantity must be a positive integer" });
     }
 
+    // Fetch product details from the database
+    const product = await Product.findById(productId);
+    if (!product) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+
+    // Check stock availability
+    if (quantity > product.quantityLeft) {
+      return res.status(400).json({ 
+        message: `Not enough stock! Only ${product.quantityLeft} items left.` 
+      });
+    }
+
     let cart = await fetchCart(req.user.id);
     if (!cart) {
       cart = new Cart({ userId: req.user.id, items: [] });
@@ -41,7 +55,14 @@ router.post("/add", authenticateToken, async (req, res) => {
     });
 
     if (itemIndex > -1) {
-      cart.items[itemIndex].quantity += quantity;
+      // If the product is already in the cart, check total quantity
+      const newQuantity = cart.items[itemIndex].quantity + quantity;
+      if (newQuantity > product.quantityLeft) {
+        return res.status(400).json({ 
+          message: `Not enough stock! Only ${product.quantityLeft} items left.` 
+        });
+      }
+      cart.items[itemIndex].quantity = newQuantity;
     } else {
       const productObjectId = new mongoose.Types.ObjectId(productId);
       cart.items.push({ productId: productObjectId, quantity });

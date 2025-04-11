@@ -12,6 +12,8 @@ import {
   Select,
   Rate,
   DatePicker,
+  Descriptions,
+  Collapse,
 } from "antd";
 import axios from "axios";
 import { AuthContext } from "../Contexts/AuthContext";
@@ -56,9 +58,13 @@ const ProductForm = ({ form, onFinish, loading }) => (
     >
       <InputNumber min={0} style={{ width: "100%" }} />
     </Form.Item>
-    <Button type="primary" htmlType="submit" loading={loading}>
-      Submit
-    </Button>
+    <Form.Item
+      name="description"
+      label="Description"
+      rules={[{ required: false }]} 
+    >
+      <Input.TextArea rows={4} placeholder="Enter product description" />
+    </Form.Item>
   </Form>
 );
 
@@ -257,12 +263,14 @@ export default function AdminDashboard() {
       label: "Orders",
       children: (
         <>
-          <div style={{ marginBottom: "20px", display: "flex", gap: "20px" }}>
+          {/* Filters */}
+          <div style={{ marginBottom: "20px", display: "flex", gap: "15px", alignItems: "center" }}>
             <Input
               placeholder="Filter by username"
               value={nameFilter}
               onChange={(e) => setNameFilter(e.target.value)}
-              style={{ width: "200px" }}
+              style={{ width: "250px" }}
+              allowClear
             />
             <DatePicker
               placeholder="Filter by date"
@@ -271,6 +279,7 @@ export default function AdminDashboard() {
               style={{ width: "200px" }}
             />
             <Button
+              type="default"
               onClick={() => {
                 setNameFilter("");
                 setDateFilter(null);
@@ -279,40 +288,84 @@ export default function AdminDashboard() {
               Clear Filters
             </Button>
           </div>
+
+          {/* Orders List */}
           <TabContent
             data={filteredOrders}
             loading={loading}
             renderItem={(order) => (
-              <List.Item>
+              <List.Item style={{ marginBottom: "20px" }}>
                 <Card
-                  title={`Order by ${order.userId?.username || "Unknown User"} (${
-                    order.userId?.email || "No email"
-                  })`}
-                >
-                  <p>Placed on: {new Date(order.createdAt).toLocaleDateString()}</p>
-                  <p>Total: ${order.total}</p>
-                  <div style={{ marginBottom: "8px" }}>
-                    Status:
+                  title={
+                    <span>
+                      Order by <strong>{order.userId?.username || "Unknown User"}</strong> ({order.userId?.email || "No email"})
+                    </span>
+                  }
+                  bordered
+                  style={{ width: "100%", boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)" }}
+                  extra={
                     <Select
                       value={order.status}
                       onChange={(value) => updateOrderStatus(order._id, value)}
-                      style={{ marginLeft: "8px", width: "150px" }}
+                      style={{ width: "150px" }}
                       disabled={actionLoading || order.status === "Delivered"}
+                      loading={actionLoading}
                     >
                       <Option value="Pending">Pending</Option>
                       <Option value="On Delivery">On Delivery</Option>
                       <Option value="Delivered">Delivered</Option>
                       <Option value="Cancelled">Cancelled</Option>
                     </Select>
+                  }
+                >
+                  <Descriptions column={1} bordered size="small">
+                    <Descriptions.Item label="Order ID">{order._id}</Descriptions.Item>
+                    <Descriptions.Item label="Placed On">
+                      {new Date(order.createdAt).toLocaleDateString()}
+                    </Descriptions.Item>
+                    <Descriptions.Item label="Total">
+                      <strong>${order.total}</strong>
+                    </Descriptions.Item>
+                    <Descriptions.Item label="Status">
+                      <span
+                        style={{
+                          color:
+                            order.status === "Delivered"
+                              ? "green"
+                              : order.status === "Cancelled"
+                              ? "red"
+                              : "blue",
+                        }}
+                      >
+                        {order.status}
+                      </span>
+                    </Descriptions.Item>
+                  </Descriptions>
+
+                  {/* Expandable Items */}
+                  <div style={{ marginTop: "15px" }}>
+                    <Collapse
+                      items={[
+                        {
+                          key: "1",
+                          label: `Items (${order.items.length})`,
+                          children: (
+                            <List
+                              dataSource={order.items}
+                              renderItem={(item) => (
+                                <List.Item>
+                                  <span>
+                                    {item.productId?.name || "Unknown Product"} x {item.quantity} - $
+                                    {(item.productId?.price || 0) * item.quantity}
+                                  </span>
+                                </List.Item>
+                              )}
+                            />
+                          ),
+                        },
+                      ]}
+                    />
                   </div>
-                  <List
-                    dataSource={order.items}
-                    renderItem={(item) => (
-                      <List.Item>
-                        {item.productId?.name || "Unknown Product"} x {item.quantity}
-                      </List.Item>
-                    )}
-                  />
                 </Card>
               </List.Item>
             )}

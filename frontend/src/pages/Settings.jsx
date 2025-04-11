@@ -3,7 +3,6 @@ import { Tabs, Form, Input, Button, message, Select } from "antd";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { AuthContext } from "../Contexts/AuthContext";
-import LogoutButton from "../components/LogoutButton";
 
 const { Option } = Select;
 
@@ -521,7 +520,6 @@ export default function Settings() {
               },
             ]}
           />
-          <LogoutButton />
         </div>
       </div>
     </div>

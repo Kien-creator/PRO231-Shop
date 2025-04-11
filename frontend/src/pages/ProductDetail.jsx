@@ -131,12 +131,30 @@ export default function ProductDetails() {
         {product.comments.length > 0 ? (
           <List
             dataSource={product.comments}
+            pagination={{
+              pageSize: 5, 
+              position: "bottom", 
+              align: "center", 
+            }}
             renderItem={(item) => (
-              <List.Item>
-                <div>
-                  <strong>{item.username}</strong> (
-                  {new Date(item.createdAt).toLocaleDateString()}):{" "}
-                  {item.comment}
+              <List.Item
+                style={{
+                  padding: "10px 0",
+                  borderBottom: "1px solid #f0f0f0",
+                }}
+              >
+                <div style={{ width: "100%" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between" }}>
+                    <strong style={{ color: "#1890ff" }}>
+                      {item.username || "Anonymous"}
+                    </strong>
+                    <span style={{ color: "#888", fontSize: "12px" }}>
+                      {new Date(item.createdAt).toLocaleString()}
+                    </span>
+                  </div>
+                  <p style={{ margin: "5px 0 0", color: "#333" }}>
+                    {item.comment}
+                  </p>
                 </div>
               </List.Item>
             )}

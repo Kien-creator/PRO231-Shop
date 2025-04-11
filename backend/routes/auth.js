@@ -16,6 +16,7 @@ const handleError = (res, err, message = "Server error") => {
 router.post("/register", async (req, res) => {
   try {
     const { username, email, password } = req.body;
+
     if (!username || !email || !password) {
       return res.status(400).json({ message: "Username, email, and password are required" });
     }
@@ -30,10 +31,20 @@ router.post("/register", async (req, res) => {
     await user.save();
 
     const token = jwt.sign(
-      { id: user._id, email: user.email, role: user.role },
+      { id: user._id, email: user.email, role: user.role, username: user.username },
       process.env.JWT_SECRET,
+      { expiresIn: "1h" }
     );
-    res.status(201).json({ message: "User registered successfully", token, email: user.email, role: user.role });
+
+    res.status(201).json({
+      message: "User registered successfully",
+      token,
+      user: {
+        email: user.email,
+        role: user.role,
+        username: user.username,
+      },
+    });
   } catch (err) {
     handleError(res, err, "Error during registration");
   }
@@ -42,18 +53,36 @@ router.post("/register", async (req, res) => {
 router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
+
+    if (!email || !password) {
+      return res.status(400).json({ message: "Email and password are required" });
+    }
+
     const user = await User.findOne({ email });
-    if (!user) return res.status(400).json({ message: "Invalid email or password" });
+    if (!user) {
+      return res.status(400).json({ message: "Invalid email or password" });
+    }
 
     const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) return res.status(400).json({ message: "Invalid email or password" });
+    if (!isMatch) {
+      return res.status(400).json({ message: "Invalid email or password" });
+    }
 
     const token = jwt.sign(
-      { id: user._id, email: user.email, role: user.role },
+      { id: user._id, email: user.email, role: user.role, username: user.username },
       process.env.JWT_SECRET,
       { expiresIn: "1h" }
     );
-    res.status(200).json({ token, email: user.email, role: user.role });
+
+    res.status(200).json({
+      message: "Login successful",
+      token,
+      user: {
+        email: user.email,
+        role: user.role,
+        username: user.username,
+      },
+    });
   } catch (err) {
     handleError(res, err, "Error during login");
   }

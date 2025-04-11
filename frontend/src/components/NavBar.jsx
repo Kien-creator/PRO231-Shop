@@ -1,5 +1,5 @@
 import React from "react";
-import { Menu, Dropdown } from "antd";
+import { Menu, Dropdown, message } from "antd"; // Added 'message' here
 import { Link } from "react-router-dom";
 import { ShoppingCartOutlined, UserOutlined, DownOutlined } from "@ant-design/icons";
 import { AuthContext } from "../Contexts/AuthContext";
@@ -15,7 +15,19 @@ export default function NavBar() {
           ...(role === "admin"
             ? [{ key: "3", label: <Link to="/admin">Admin Dashboard</Link> }]
             : []),
-          { key: "4", label: <span onClick={logout}>Logout</span> },
+          {
+            key: "4",
+            label: (
+              <span
+                onClick={() => {
+                  logout(); // Call the logout function
+                  message.success("Logged out successfully!"); // Show the success message
+                }}
+              >
+                Logout
+              </span>
+            ),
+          },
         ]
       : [
           { key: "1", label: <Link to="/login">Login</Link> },

@@ -201,14 +201,16 @@ export default function Cart() {
           {/* Table Rows */}
           {cart.items.map((item) => (
             <div key={item._id} style={tableRowStyle}>
+              {/* Checkbox for selecting the item */}
               <div style={{ ...columnStyle, flex: 0.5 }}>
                 <Checkbox
                   checked={selectedItems.includes(item._id)}
                   onChange={() => handleCheckboxChange(item._id)}
                 />
               </div>
+
+              {/* Product details with image and name */}
               <div style={productColumnStyle}>
-                {/* Product Image (if available) */}
                 {item.productId?.image ? (
                   <img
                     src={item.productId.image}
@@ -227,12 +229,12 @@ export default function Cart() {
                 )}
                 <div>
                   <strong>
-                    {item.productId && item.productId.name
-                      ? item.productId.name
-                      : "Unknown Product"}
+                    {item.productId?.name || "Unknown Product"}
                   </strong>
                 </div>
               </div>
+
+              {/* Quantity controls */}
               <div style={columnStyle}>
                 <Space>
                   <Button
@@ -244,18 +246,24 @@ export default function Cart() {
                   <span>{item.quantity}</span>
                   <Button
                     onClick={(e) => updateQuantity(item._id, item.quantity + 1, e)}
-                    disabled={false}
+                    disabled={item.quantity >= item.productId?.quantityLeft}
                   >
                     +
                   </Button>
                 </Space>
               </div>
+
+              {/* Price per item */}
               <div style={columnStyle}>
-                ${item.productId && item.productId.price ? item.productId.price : "N/A"}
+                ${item.productId?.price || "N/A"}
               </div>
+
+              {/* Total price for the item */}
               <div style={columnStyle}>
                 ${(item.productId?.price || 0) * item.quantity}
               </div>
+
+              {/* Remove button */}
               <div style={columnStyle}>
                 <Button
                   type="link"

@@ -141,4 +141,42 @@ router.delete("/products/:id", auth, isAdmin, async (req, res) => {
   }
 });
 
+router.post("/admin/products", auth, isAdmin, async (req, res) => {
+  try {
+    const { name, price, image, quantityLeft, description } = req.body;
+
+    if (!name || !price || quantityLeft === undefined) {
+      return res.status(400).json({ message: "Name, price, and quantity are required" });
+    }
+
+    const product = new Product({ name, price, image, quantityLeft, description });
+    await product.save();
+    res.status(201).json({ message: "Product created successfully", product });
+  } catch (err) {
+    handleError(res, err, "POST /admin/products - Error:");
+  }
+});
+
+router.put("/admin/products/:id", auth, isAdmin, async (req, res) => {
+  try {
+    const { name, price, image, quantityLeft, description } = req.body;
+
+    const product = await Product.findById(req.params.id);
+    if (!product) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+
+    product.name = name || product.name;
+    product.price = price || product.price;
+    product.image = image || product.image;
+    product.quantityLeft = quantityLeft !== undefined ? quantityLeft : product.quantityLeft;
+    product.description = description || product.description;
+
+    await product.save();
+    res.status(200).json({ message: "Product updated successfully", product });
+  } catch (err) {
+    handleError(res, err, "PUT /admin/products/:id - Error:");
+  }
+});
+
 module.exports = router;
