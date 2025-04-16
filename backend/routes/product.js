@@ -13,13 +13,11 @@ router.get("/", async (req, res, next) => {
     if (search) query.name = { $regex: search, $options: "i" };
     if (categoryId) query.categoryId = categoryId;
 
-    console.log("Product query:", query);
     const products = await Product.find(query)
       .populate("categoryId")
       .skip((page - 1) * limit)
       .limit(parseInt(limit));
 
-    console.log("Products found:", products);
     res.status(200).json(products);
   } catch (err) {
     next(err);
@@ -30,7 +28,6 @@ router.get("/", async (req, res, next) => {
 router.get("/categories", async (req, res, next) => {
   try {
     const categories = await Category.find();
-    console.log("Categories found:", categories);
     res.status(200).json(categories);
   } catch (err) {
     next(err);

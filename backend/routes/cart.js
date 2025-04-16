@@ -8,26 +8,20 @@ const authMiddleware = require("../middlewares/authMiddleware");
 router.get("/", authMiddleware, async (req, res, next) => {
   try {
     const userId = req.user.id;
-    console.log("Fetching cart for userId:", userId); // Log the userId
 
     let cart = await Cart.findOne({ userId }).populate("items.productId");
-    console.log("Cart found:", cart); // Log the cart before filtering
 
     if (!cart) {
-      console.log("No cart found, returning empty array");
       return res.status(200).json([]);
     }
 
     // Filter out items where productId is null
     cart.items = cart.items.filter((item) => item.productId !== null);
-    console.log("Filtered cart items:", cart.items); // Log the filtered items
 
     await cart.save();
-    console.log("Returning cart items:", cart.items); // Log the final response
 
     res.status(200).json(cart.items);
   } catch (err) {
-    console.error("Error fetching cart:", err);
     next(err);
   }
 });
