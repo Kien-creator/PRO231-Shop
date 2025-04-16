@@ -1,4 +1,3 @@
-// src/layouts/MainLayout.jsx
 import React from "react";
 import { Layout } from "antd";
 import Header from "../components/Header";

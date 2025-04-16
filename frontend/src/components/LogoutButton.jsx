@@ -1,4 +1,3 @@
-// src/components/LogoutButton.jsx
 import React, { useContext } from "react";
 import { AuthContext } from "../Contexts/AuthContext";
 import { Button } from "antd";

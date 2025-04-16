@@ -8,7 +8,7 @@ export default function HeroSection() {
   return (
     <div
       style={{
-        background: "linear-gradient(145deg, #E8F5E9, #ffffff)", // Peach/orange gradient
+        background: "linear-gradient(145deg, #E8F5E9, #ffffff)", 
         padding: "60px 24px",
         textAlign: "center",
         borderRadius: "12px",
@@ -39,7 +39,7 @@ export default function HeroSection() {
           type="primary"
           size="large"
           style={{
-            background: "#1a3c34", // Dark green
+            background: "#1a3c34", 
             borderColor: "#1a3c34",
             borderRadius: "8px",
             padding: "0 32px",

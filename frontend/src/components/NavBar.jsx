@@ -32,12 +32,10 @@ export default function NavBar() {
         height: "100%",
       }}
     >
-      {/* Left: Fake Shop Logo and Navigation Links */}
       <Space size="middle" style={{ alignItems: "center" }}>
-        {/* Fake Shop Logo */}
         <Link to="/">
           <img
-            src="src\assets\logo.png" 
+            src= "/assets/logo.png" 
             alt="Fake Shop Logo"
             style={{
               height: "40px",
@@ -45,8 +43,6 @@ export default function NavBar() {
             }}
           />
         </Link>
-
-        {/* Navigation Links */}
         <Link to="/" style={linkStyle("/")}>
           Home
         </Link>
@@ -74,8 +70,6 @@ export default function NavBar() {
           </Link>
         )}
       </Space>
-
-      {/* Right: Login/Logout Buttons */}
       <Space size="middle">
         {!isLoggedIn ? (
           <>

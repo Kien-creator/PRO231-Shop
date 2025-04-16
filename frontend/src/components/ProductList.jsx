@@ -1,4 +1,3 @@
-// src/components/ProductList.jsx
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import ProductCard from "./ProductCard";
@@ -26,7 +25,6 @@ export default function ProductList({ searchTerm }) {
         const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/categories`);
         setCategories(Array.isArray(response.data) ? response.data : []);
       } catch (error) {
-        console.error("Failed to load categories:", error);
         setCategories([]);
       }
     };
@@ -115,7 +113,6 @@ export default function ProductList({ searchTerm }) {
 
   return (
     <div>
-      {/* Filters and Sorting */}
       <div style={filterStyle}>
         <div style={filterItemStyle}>
           <Text strong style={{ color: "#1a3c34" }}>
@@ -218,7 +215,6 @@ export default function ProductList({ searchTerm }) {
         </div>
       </div>
 
-      {/* Product List */}
       {loading ? (
         <div style={{ textAlign: "center", padding: "40px" }}>
           <Spin size="large" />
@@ -243,7 +239,6 @@ export default function ProductList({ searchTerm }) {
         </div>
       )}
 
-      {/* Pagination */}
       {total > pageSize && !loading && (
         <div style={{ textAlign: "center", margin: "30px 0" }}>
           <Pagination

@@ -4,8 +4,6 @@ import { Typography, Timeline, Space } from "antd"; // Added Space import
 const { Text } = Typography;
 
 const ShippingStatus = ({ status }) => {
-  console.log("ShippingStatus rendering with status:", status); // Add for debugging
-
   const getStatusSteps = () => {
     switch (status) {
       case "pending":

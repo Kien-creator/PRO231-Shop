@@ -78,10 +78,10 @@ export default function Settings() {
       <Title
         level={3}
         style={{
-          color: "#1a3c34", // Dark green for the title
+          color: "#1a3c34", 
           textAlign: "center",
-          marginBottom: "24px", // Consistent spacing
-          fontWeight: "bold", // Bold title for emphasis
+          marginBottom: "24px", 
+          fontWeight: "bold", 
         }}
       >
         Cài Đặt 
@@ -99,10 +99,10 @@ export default function Settings() {
           <Input
             placeholder="Nhập tên người dùng của bạn"
             style={{
-              borderRadius: "8px", // Rounded input fields
+              borderRadius: "8px", 
               padding: "10px",
-              border: "1px solid #D1D5DB", // Light border for inputs
-              background: "#FFFFFF", // White background for inputs
+              border: "1px solid #D1D5DB", 
+              background: "#FFFFFF", 
             }}
           />
         </Form.Item>
@@ -118,25 +118,9 @@ export default function Settings() {
               borderRadius: "8px",
               padding: "10px",
               border: "1px solid #D1D5DB",
-              background: "#F9FAFB", // Slightly gray background for disabled input
+              background: "#F9FAFB", 
             }}
             disabled
-          />
-        </Form.Item>
-
-        <Form.Item
-          label="Số Điện Thoại"
-          name="phoneNumber"
-          rules={[{ required: true, message: "Vui lòng nhập số điện thoại của bạn!" }]}
-        >
-          <Input
-            placeholder="Nhập số điện thoại của bạn"
-            style={{
-              borderRadius: "8px",
-              padding: "10px",
-              border: "1px solid #D1D5DB",
-              background: "#FFFFFF",
-            }}
           />
         </Form.Item>
 
@@ -146,14 +130,14 @@ export default function Settings() {
             htmlType="submit"
             style={{
               width: "100%",
-              background: "#00796B", // Dark green for buttons
+              background: "#00796B", 
               borderColor: "#00796B",
               height: "45px",
               borderRadius: "10px",
               fontWeight: "bold",
-              transition: "transform 0.3s ease, background 0.3s ease", // Smooth hover effects
+              transition: "transform 0.3s ease, background 0.3s ease", 
             }}
-            onMouseEnter={(e) => (e.currentTarget.style.background = "#004D40")} // Darker green on hover
+            onMouseEnter={(e) => (e.currentTarget.style.background = "#004D40")} 
             onMouseLeave={(e) => (e.currentTarget.style.background = "#00796B")}
           >
             Lưu Thay Đổi

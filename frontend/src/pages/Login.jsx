@@ -27,78 +27,55 @@ export default function Login() {
   return (
     <div
       style={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        minHeight: "100vh",
-        background: "#E8F5E9", // Updated background color
-        padding: "20px",
+        maxWidth: "400px",
+        margin: "100px auto",
+        background: "#fff",
+        padding: "30px",
+        borderRadius: "12px",
+        boxShadow: "0 4px 12px rgba(0, 0, 0, 0.05)",
       }}
     >
-      <div
-        style={{
-          width: "100%",
-          maxWidth: "400px",
-          padding: "40px",
-          background: "#fff", // White background for the form container
-          borderRadius: "12px",
-          boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)", // Slightly darker shadow
-        }}
-      >
-        <Title level={3} style={{ textAlign: "center", marginBottom: "24px", color: "#1a3c34" }}>
-          Login
-        </Title>
-        <Form form={form} onFinish={onFinish} layout="vertical">
-          <Form.Item
-            name="email"
-            label="Email"
-            rules={[{ required: true, message: "Please enter your email" }]}
+      <Title level={3} style={{ color: "#1a3c34", textAlign: "center" }}>
+        Login
+      </Title>
+      <Form form={form} onFinish={onFinish} layout="vertical">
+        <Form.Item
+          name="email"
+          label="Email"
+          rules={[{ required: true, message: "Please enter your email" }]}
+        >
+          <Input placeholder="Enter your email" size="large" />
+        </Form.Item>
+        <Form.Item
+          name="password"
+          label="Password"
+          rules={[{ required: true, message: "Please enter your password" }]}
+        >
+          <Input.Password placeholder="Enter your password" size="large" />
+        </Form.Item>
+        <Form.Item>
+          <Button
+            type="primary"
+            htmlType="submit"
+            style={{
+              width: "100%",
+              background: "#1a3c34",
+              borderColor: "#1a3c34",
+              borderRadius: "8px",
+              height: "40px",
+            }}
           >
-            <Input placeholder="Enter your email" size="large" />
-          </Form.Item>
-          <Form.Item
-            name="password"
-            label="Password"
-            rules={[{ required: true, message: "Please enter your password" }]}
-          >
-            <Input.Password placeholder="Enter your password" size="large" />
-          </Form.Item>
-          <Form.Item>
-            <Button
-              type="primary"
-              htmlType="submit"
-              style={{
-                width: "100%",
-                background: "#00C853", // Updated button color
-                borderColor: "#00C853",
-                borderRadius: "8px",
-                height: "40px",
-                transition: "transform 0.3s ease", // Added hover effect
-              }}
-              onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.05)")} // Scale up on hover
-              onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")} // Reset on hover out
-            >
-              Login
-            </Button>
-          </Form.Item>
-          <div style={{ textAlign: "center" }}>
-            <span style={{ color: "#1a3c34" }}>Don't have an account? </span>
-            <Button
-              type="link"
-              onClick={() => navigate("/register")}
-              style={{
-                color: "#00C853", // Updated link color
-                padding: 0,
-                transition: "transform 0.3s ease", // Added hover effect
-              }}
-              onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.05)")} // Scale up on hover
-              onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")} // Reset on hover out
-            >
-              Register
-            </Button>
-          </div>
-        </Form>
-      </div>
+            Login
+          </Button>
+        </Form.Item>
+        <Button
+          type="link"
+          onClick={() => navigate("/register")}
+          style={{ padding: 0 }}
+        >
+          Don't have an account? Register
+        </Button>
+      </Form>
     </div>
   );
 }

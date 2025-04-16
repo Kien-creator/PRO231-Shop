@@ -74,7 +74,6 @@ export default function Shop() {
 
   return (
     <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "30px" }}>
-      {/* Category Filter and SearchBar Outside the Main Div */}
       <Space style={{ marginBottom: "20px", width: "100%", justifyContent: "space-between", flexWrap: "wrap" }}>
         <Title level={3} style={{ color: "#1a3c34", margin: 0 }}>
           Cửa Hàng
@@ -97,7 +96,6 @@ export default function Shop() {
         </Space>
       </Space>
 
-      {/* Main Div for Product List and Loading State */}
       {loading ? (
         <div style={{ textAlign: "center", padding: "40px" }}>
           <Spin size="large" />
@@ -108,7 +106,7 @@ export default function Shop() {
       ) : (
         <div
           style={{
-            background: "#E8F5E9", // Shopee-inspired light green
+            background: "#E8F5E9",
             borderRadius: "12px",
             boxShadow: "0 4px 12px rgba(0, 0, 0, 0.05)",
             padding: "20px",
@@ -201,7 +199,7 @@ export default function Shop() {
                                     navigate(`/product/${product._id}`);
                                   }}
                                   style={{
-                                    backgroundColor: "#00C853", // Shopee vibrant green
+                                    backgroundColor: "#00C853", 
                                     borderColor: "#00C853",
                                     transition: "transform 0.3s ease",
                                   }}
@@ -215,7 +213,7 @@ export default function Shop() {
                                   onClick={() => handleAddToCart(product)}
                                   disabled={product.stock === 0}
                                   style={{
-                                    backgroundColor: "#ff9800", // Shopee orange
+                                    backgroundColor: "#ff9800", 
                                     borderColor: "#ff9800",
                                     color: "#fff",
                                     transition: "transform 0.3s ease",

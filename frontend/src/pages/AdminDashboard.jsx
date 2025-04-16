@@ -19,7 +19,6 @@ import {
   Space,
   Tag,
   DatePicker,
-  Table,
 } from "antd";
 import {
   PlusOutlined,
@@ -31,6 +30,7 @@ import {
   CommentOutlined,
   TruckOutlined,
   GiftOutlined,
+  HomeOutlined,
 } from "@ant-design/icons";
 import axios from "axios";
 import { AuthContext } from "../Contexts/AuthContext";
@@ -46,7 +46,7 @@ const TabContent = ({ data, renderItem, loading, total, currentPage, pageSize, o
   <div style={{ padding: "20px 0" }}>
     {loading ? (
       <Text type="secondary" style={{ display: "block", textAlign: "center" }}>
-        Loading...
+        Đang tải...
       </Text>
     ) : (
       <>
@@ -72,13 +72,13 @@ const CategoryForm = ({ form, onFinish, loading }) => (
   <Form form={form} onFinish={onFinish} layout="vertical" style={{ maxWidth: "600px", margin: "0 auto" }}>
     <Form.Item
       name="name"
-      label="Category Name"
-      rules={[{ required: true, message: "Please enter the category name" }]}
+      label="Tên Danh Mục"
+      rules={[{ required: true, message: "Vui lòng nhập tên danh mục!" }]}
     >
-      <Input size="large" placeholder="Enter category name" style={{ borderRadius: "8px" }} />
+      <Input size="large" placeholder="Nhập tên danh mục" style={{ borderRadius: "8px" }} />
     </Form.Item>
-    <Form.Item name="description" label="Description">
-      <Input.TextArea rows={4} size="large" placeholder="Enter category description" style={{ borderRadius: "8px" }} />
+    <Form.Item name="description" label="Mô Tả">
+      <Input.TextArea rows={4} size="large" placeholder="Nhập mô tả danh mục" style={{ borderRadius: "8px" }} />
     </Form.Item>
   </Form>
 );
@@ -87,39 +87,39 @@ const ProductForm = ({ form, onFinish, loading, categories }) => (
   <Form form={form} onFinish={onFinish} layout="vertical" style={{ maxWidth: "600px", margin: "0 auto" }}>
     <Form.Item
       name="name"
-      label="Product Name"
-      rules={[{ required: true, message: "Please enter the product name" }]}
+      label="Tên Sản Phẩm"
+      rules={[{ required: true, message: "Vui lòng nhập tên sản phẩm!" }]}
     >
-      <Input size="large" placeholder="Enter product name" style={{ borderRadius: "8px" }} />
+      <Input size="large" placeholder="Nhập tên sản phẩm" style={{ borderRadius: "8px" }} />
     </Form.Item>
     <Form.Item
       name="price"
-      label="Price"
-      rules={[{ required: true, message: "Please enter the product price" }]}
+      label="Giá"
+      rules={[{ required: true, message: "Vui lòng nhập giá sản phẩm!" }]}
     >
-      <InputNumber min={0} size="large" style={{ width: "100%", borderRadius: "8px" }} placeholder="Enter price" />
+      <InputNumber min={0} size="large" style={{ width: "100%", borderRadius: "8px" }} placeholder="Nhập giá" />
     </Form.Item>
-    <Form.Item name="images" label="Image URL">
-      <Input size="large" placeholder="Enter image URL" style={{ borderRadius: "8px" }} />
+    <Form.Item name="images" label="URL Hình Ảnh">
+      <Input size="large" placeholder="Nhập URL hình ảnh" style={{ borderRadius: "8px" }} />
     </Form.Item>
     <Form.Item
       name="stock"
-      label="Stock Quantity"
-      rules={[{ required: true, message: "Please enter the stock quantity" }]}
+      label="Số Lượng Tồn Kho"
+      rules={[{ required: true, message: "Vui lòng nhập số lượng tồn kho!" }]}
     >
-      <InputNumber min={0} size="large" style={{ width: "100%", borderRadius: "8px" }} placeholder="Enter stock quantity" />
+      <InputNumber min={0} size="large" style={{ width: "100%", borderRadius: "8px" }} placeholder="Nhập số lượng tồn kho" />
     </Form.Item>
-    <Form.Item name="description" label="Description">
-      <Input.TextArea rows={4} size="large" placeholder="Enter product description" style={{ borderRadius: "8px" }} />
+    <Form.Item name="description" label="Mô Tả">
+      <Input.TextArea rows={4} size="large" placeholder="Nhập mô tả sản phẩm" style={{ borderRadius: "8px" }} />
     </Form.Item>
     <Form.Item
       name="categoryId"
-      label="Category"
-      rules={[{ required: true, message: "Please select a category" }]}
+      label="Danh Mục"
+      rules={[{ required: true, message: "Vui lòng chọn danh mục!" }]}
     >
       <Select
         size="large"
-        placeholder="Select a category"
+        placeholder="Chọn danh mục"
         loading={loading}
         disabled={categories.length === 0}
         style={{ borderRadius: "8px" }}
@@ -138,46 +138,46 @@ const PromotionForm = ({ form, onFinish, loading }) => (
   <Form form={form} onFinish={onFinish} layout="vertical" style={{ maxWidth: "600px", margin: "0 auto" }}>
     <Form.Item
       name="name"
-      label="Promotion Name"
-      rules={[{ required: true, message: "Please enter the promotion name" }]}
+      label="Tên Khuyến Mãi"
+      rules={[{ required: true, message: "Vui lòng nhập tên khuyến mãi!" }]}
     >
-      <Input size="large" placeholder="Enter promotion name" style={{ borderRadius: "8px" }} />
+      <Input size="large" placeholder="Nhập tên khuyến mãi" style={{ borderRadius: "8px" }} />
     </Form.Item>
     <Form.Item
       name="code"
-      label="Promotion Code"
-      rules={[{ required: true, message: "Please enter the promotion code" }]}
+      label="Mã Khuyến Mãi"
+      rules={[{ required: true, message: "Vui lòng nhập mã khuyến mãi!" }]}
     >
-      <Input size="large" placeholder="Enter promotion code" style={{ borderRadius: "8px" }} />
+      <Input size="large" placeholder="Nhập mã khuyến mãi" style={{ borderRadius: "8px" }} />
     </Form.Item>
     <Form.Item
       name="discount"
-      label="Discount"
-      rules={[{ required: true, message: "Please enter the discount value" }]}
+      label="Giảm Giá"
+      rules={[{ required: true, message: "Vui lòng nhập giá trị giảm giá!" }]}
     >
-      <InputNumber min={0} size="large" style={{ width: "100%", borderRadius: "8px" }} placeholder="Enter discount" />
+      <InputNumber min={0} size="large" style={{ width: "100%", borderRadius: "8px" }} placeholder="Nhập giá trị giảm giá" />
     </Form.Item>
     <Form.Item
       name="type"
-      label="Discount Type"
-      rules={[{ required: true, message: "Please select a discount type" }]}
+      label="Loại Giảm Giá"
+      rules={[{ required: true, message: "Vui lòng chọn loại giảm giá!" }]}
     >
-      <Select size="large" placeholder="Select discount type" style={{ borderRadius: "8px" }}>
-        <Option value="percentage">Percentage</Option>
-        <Option value="fixed">Fixed</Option>
+      <Select size="large" placeholder="Chọn loại giảm giá" style={{ borderRadius: "8px" }}>
+        <Option value="percentage">Phần Trăm</Option>
+        <Option value="fixed">Cố Định</Option>
       </Select>
     </Form.Item>
     <Form.Item
       name="startDate"
-      label="Start Date"
-      rules={[{ required: true, message: "Please select a start date" }]}
+      label="Ngày Bắt Đầu"
+      rules={[{ required: true, message: "Vui lòng chọn ngày bắt đầu!" }]}
     >
       <DatePicker size="large" style={{ width: "100%", borderRadius: "8px" }} />
     </Form.Item>
     <Form.Item
       name="endDate"
-      label="End Date"
-      rules={[{ required: true, message: "Please select an end date" }]}
+      label="Ngày Kết Thúc"
+      rules={[{ required: true, message: "Vui lòng chọn ngày kết thúc!" }]}
     >
       <DatePicker size="large" style={{ width: "100%", borderRadius: "8px" }} />
     </Form.Item>
@@ -199,8 +199,6 @@ export default function AdminDashboard() {
   const [categoryForm] = Form.useForm();
   const [promotionForm] = Form.useForm();
   const [currentMenu, setCurrentMenu] = useState("add-category");
-  const [isProductModalVisible, setIsProductModalVisible] = useState(false);
-  const [formProduct] = Form.useForm();
 
   const [ordersTotal, setOrdersTotal] = useState(0);
   const [ordersPage, setOrdersPage] = useState(1);
@@ -240,7 +238,7 @@ export default function AdminDashboard() {
       const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/products`);
       setProducts(response.data);
     } catch (err) {
-      message.error("Failed to load products.");
+      message.error("Không thể tải sản phẩm.");
     } finally {
       setLoading(false);
     }
@@ -254,7 +252,7 @@ export default function AdminDashboard() {
       });
       setCategories(response.data);
     } catch (err) {
-      message.error("Failed to load categories.");
+      message.error("Không thể tải danh mục.");
     } finally {
       setLoading(false);
     }
@@ -279,7 +277,7 @@ export default function AdminDashboard() {
       setOrders(response.data.orders || []);
       setOrdersTotal(response.data.total || 0);
     } catch (err) {
-      message.error("Failed to load orders.");
+      message.error("Không thể tải đơn hàng.");
     } finally {
       setLoading(false);
     }
@@ -302,7 +300,7 @@ export default function AdminDashboard() {
       setUsers(response.data.users || []);
       setUsersTotal(response.data.total || 0);
     } catch (err) {
-      message.error("Failed to load users.");
+      message.error("Không thể tải người dùng.");
     } finally {
       setLoading(false);
     }
@@ -319,7 +317,7 @@ export default function AdminDashboard() {
       setReviews(response.data.reviews || []);
       setReviewsTotal(response.data.total || 0);
     } catch (err) {
-      message.error("Failed to load reviews.");
+      message.error("Không thể tải đánh giá.");
     } finally {
       setLoading(false);
     }
@@ -336,7 +334,7 @@ export default function AdminDashboard() {
       setShippings(response.data.shippings || []);
       setShippingsTotal(response.data.total || 0);
     } catch (err) {
-      message.error("Failed to load shippings.");
+      message.error("Không thể tải thông tin giao hàng.");
     } finally {
       setLoading(false);
     }
@@ -353,7 +351,7 @@ export default function AdminDashboard() {
       setPromotions(response.data.promotions || []);
       setPromotionsTotal(response.data.total || 0);
     } catch (err) {
-      message.error("Failed to load promotions.");
+      message.error("Không thể tải khuyến mãi.");
     } finally {
       setLoading(false);
     }
@@ -369,9 +367,9 @@ export default function AdminDashboard() {
         headers: { Authorization: `Bearer ${token}` },
       });
       updateState(response.data);
-      message.success(response.data.message || "Action successful!");
+      message.success(response.data.message || "Thành công!");
     } catch (err) {
-      message.error(err.response?.data?.message || "Action failed.");
+      message.error(err.response?.data?.message || "Thất bại.");
     } finally {
       setActionLoading(false);
     }
@@ -445,7 +443,7 @@ export default function AdminDashboard() {
       { paymentStatus },
       (data) => {
         setOrders(orders.map((o) => (o._id === orderId ? data.order : o)));
-        fetchShippings(); // Refetch shippings
+        fetchShippings();
       }
     );
   };
@@ -465,7 +463,7 @@ export default function AdminDashboard() {
       values,
       (data) => {
         setShippings(shippings.map((s) => (s._id === id ? data.shipping : s)));
-        fetchOrders(); // Refetch orders to sync status
+        fetchOrders();
       }
     );
   };
@@ -525,7 +523,7 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     if (!isLoggedIn || role !== "admin") {
-      message.error("Only admins can access this page!");
+      message.error("Chỉ quản trị viên mới có thể truy cập trang này!");
       navigate("/login");
     } else {
       fetchProducts();
@@ -556,47 +554,47 @@ export default function AdminDashboard() {
     {
       key: "add-category",
       icon: <PlusOutlined />,
-      label: "Add Category",
+      label: "Thêm Danh Mục",
     },
     {
       key: "add-product",
       icon: <PlusOutlined />,
-      label: "Add Product",
+      label: "Thêm Sản Phẩm",
     },
     {
       key: "manage-products",
       icon: <EditOutlined />,
-      label: "Manage Products",
+      label: "Quản Lý Sản Phẩm",
     },
     {
       key: "orders",
       icon: <ShoppingCartOutlined />,
-      label: "Orders",
+      label: "Đơn Hàng",
     },
     {
       key: "manage-users",
       icon: <UserOutlined />,
-      label: "Manage Users",
+      label: "Quản Lý Người Dùng",
     },
     {
       key: "manage-reviews",
       icon: <CommentOutlined />,
-      label: "Manage Reviews",
+      label: "Quản Lý Đánh Giá",
     },
     {
       key: "manage-shipping",
       icon: <TruckOutlined />,
-      label: "Manage Shipping",
+      label: "Quản Lý Giao Hàng",
     },
     {
       key: "add-promotion",
       icon: <PlusOutlined />,
-      label: "Add Promotion",
+      label: "Thêm Khuyến Mãi",
     },
     {
       key: "manage-promotions",
       icon: <GiftOutlined />,
-      label: "Manage Promotions",
+      label: "Quản Lý Khuyến Mãi",
     },
   ];
 
@@ -606,7 +604,7 @@ export default function AdminDashboard() {
         return (
           <div style={{ background: "#fff", padding: "30px", borderRadius: "12px", boxShadow: "0 4px 12px rgba(0, 0, 0, 0.05)" }}>
             <Title level={4} style={{ color: "#1a3c34", marginBottom: "20px" }}>
-              Add New Category
+              Thêm Danh Mục Mới
             </Title>
             <CategoryForm form={categoryForm} onFinish={addCategory} loading={actionLoading} />
             <Button
@@ -626,117 +624,43 @@ export default function AdminDashboard() {
                 transition: "all 0.3s",
               }}
             >
-              Save Category
+              Lưu Danh Mục
             </Button>
           </div>
         );
       case "add-product":
         return (
-          <div
-            style={{
-              maxWidth: "1200px",
-              margin: "0 auto",
-              padding: "30px",
-              background: "#F9FAFB",
-              borderRadius: "16px",
-              boxShadow: "0 6px 20px rgba(0, 0, 0, 0.1)",
-            }}
-          >
-            <Title level={3} style={{ color: "#1A202C", marginBottom: "24px" }}>
-              Bảng Điều Khiển Quản Trị
+          <div style={{ background: "#fff", padding: "30px", borderRadius: "12px", boxShadow: "0 4px 12px rgba(0, 0, 0, 0.05)" }}>
+            <Title level={4} style={{ color: "#1a3c34", marginBottom: "20px" }}>
+              Thêm Sản Phẩm Mới
             </Title>
+            <ProductForm form={form} onFinish={addProduct} loading={actionLoading} categories={categories} />
             <Button
               type="primary"
-              onClick={() => setIsProductModalVisible(true)}
+              onClick={() => form.submit()}
+              loading={actionLoading}
+              size="large"
+              icon={<PlusOutlined />}
               style={{
-                marginBottom: "16px",
-                background: "#38A169",
-                borderColor: "#38A169",
-                borderRadius: "12px",
-                padding: "10px 20px",
+                background: "#1a3c34",
+                borderColor: "#1a3c34",
+                borderRadius: "8px",
+                padding: "0 24px",
+                height: "48px",
                 fontSize: "16px",
-                transition: "transform 0.3s ease, background 0.3s ease",
+                marginTop: "10px",
+                transition: "all 0.3s",
               }}
-              onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.05)")}
-              onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
             >
-              Thêm Sản Phẩm
+              Lưu Sản Phẩm
             </Button>
-            <Table
-              columns={[
-                { title: "Tên Sản Phẩm", dataIndex: "name", key: "name" },
-                { title: "Giá", dataIndex: "price", key: "price" },
-                { title: "Số Lượng", dataIndex: "stock", key: "stock" },
-              ]}
-              dataSource={products}
-              rowKey="_id"
-              pagination={{ pageSize: 5 }}
-              style={{
-                background: "#FFFFFF",
-                borderRadius: "12px",
-                boxShadow: "0 4px 12px rgba(0, 0, 0, 0.05)",
-                overflow: "hidden",
-              }}
-            />
-            <Modal
-              title="Thêm Sản Phẩm"
-              open={isProductModalVisible}
-              onCancel={() => {
-                setIsProductModalVisible(false);
-                formProduct.resetFields();
-              }}
-              footer={null}
-              style={{
-                borderRadius: "16px",
-                padding: "20px",
-              }}
-              bodyStyle={{
-                background: "#F7FAFC",
-                borderRadius: "12px",
-              }}
-            >
-              <Form form={formProduct} onFinish={addProduct} layout="vertical">
-                <Form.Item
-                  label="Tên Sản Phẩm"
-                  name="name"
-                  rules={[{ required: true, message: "Vui lòng nhập tên sản phẩm!" }]}
-                >
-                  <Input
-                    placeholder="Nhập tên sản phẩm"
-                    style={{
-                      borderRadius: "8px",
-                      padding: "10px",
-                    }}
-                  />
-                </Form.Item>
-                <Form.Item>
-                  <Button
-                    type="primary"
-                    htmlType="submit"
-                    style={{
-                      width: "100%",
-                      background: "#38A169",
-                      borderColor: "#38A169",
-                      borderRadius: "12px",
-                      padding: "10px 20px",
-                      fontSize: "16px",
-                      transition: "transform 0.3s ease, background 0.3s ease",
-                    }}
-                    onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.05)")}
-                    onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
-                  >
-                    Thêm Sản Phẩm
-                  </Button>
-                </Form.Item>
-              </Form>
-            </Modal>
           </div>
         );
       case "manage-products":
         return (
           <div style={{ background: "#fff", padding: "30px", borderRadius: "12px", boxShadow: "0 4px 12px rgba(0, 0, 0, 0.05)" }}>
             <Title level={4} style={{ color: "#1a3c34", marginBottom: "20px" }}>
-              Manage Products
+              Quản Lý Sản Phẩm
             </Title>
             <TabContent
               data={products}
@@ -763,7 +687,7 @@ export default function AdminDashboard() {
                         transition: "all 0.3s",
                       }}
                     >
-                      Delete
+                      Xóa
                     </Button>,
                     <Button
                       onClick={() => {
@@ -789,7 +713,7 @@ export default function AdminDashboard() {
                         transition: "all 0.3s",
                       }}
                     >
-                      Update
+                      Cập Nhật
                     </Button>,
                   ]}
                 >
@@ -800,9 +724,9 @@ export default function AdminDashboard() {
                     <Text style={{ color: "#555" }}>
                       {(product.price || 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")} VNĐ
                     </Text>
-                    <Text style={{ color: "#888" }}>Stock: {product.stock}</Text>
+                    <Text style={{ color: "#888" }}>Tồn Kho: {product.stock}</Text>
                     <Text style={{ color: "#888" }}>
-                      Category: {product.categoryId?.name || "No Category"}
+                      Danh Mục: {product.categoryId?.name || "Không Có Danh Mục"}
                     </Text>
                   </Space>
                 </List.Item>
@@ -814,13 +738,13 @@ export default function AdminDashboard() {
         return (
           <div style={{ background: "#fff", padding: "30px", borderRadius: "12px", boxShadow: "0 4px 12px rgba(0, 0, 0, 0.05)" }}>
             <Title level={4} style={{ color: "#1a3c34", marginBottom: "20px" }}>
-              Manage Orders
+              Quản Lý Đơn Hàng
             </Title>
             <div style={filterStyle}>
               <div style={filterItemStyle}>
-                <Text strong style={{ color: "#1a3c34" }}>Search Order Code</Text>
+                <Text strong style={{ color: "#1a3c34" }}>Tìm Kiếm Mã Đơn Hàng</Text>
                 <Input
-                  placeholder="Enter order code"
+                  placeholder="Nhập mã đơn hàng"
                   value={orderSearch}
                   onChange={(e) => setOrderSearch(e.target.value)}
                   allowClear
@@ -829,63 +753,63 @@ export default function AdminDashboard() {
                 />
               </div>
               <div style={filterItemStyle}>
-                <Text strong style={{ color: "#1a3c34" }}>Order Status</Text>
+                <Text strong style={{ color: "#1a3c34" }}>Trạng Thái Đơn Hàng</Text>
                 <Select
                   value={orderStatusFilter}
                   onChange={(value) => setOrderStatusFilter(value)}
-                  placeholder="Select status"
+                  placeholder="Chọn trạng thái"
                   size="large"
                   style={{ borderRadius: "8px" }}
                   allowClear
                 >
-                  <Option value="pending">Pending</Option>
-                  <Option value="processing">Processing</Option>
-                  <Option value="shipped">Shipped</Option>
-                  <Option value="delivered">Delivered</Option>
-                  <Option value="canceled">Canceled</Option>
+                  <Option value="pending">Chờ Xử Lý</Option>
+                  <Option value="processing">Đang Xử Lý</Option>
+                  <Option value="shipped">Đã Gửi Hàng</Option>
+                  <Option value="delivered">Đã Giao Hàng</Option>
+                  <Option value="canceled">Đã Hủy</Option>
                 </Select>
               </div>
               <div style={filterItemStyle}>
-                <Text strong style={{ color: "#1a3c34" }}>Payment Status</Text>
+                <Text strong style={{ color: "#1a3c34" }}>Trạng Thái Thanh Toán</Text>
                 <Select
                   value={orderPaymentStatusFilter}
                   onChange={(value) => setOrderPaymentStatusFilter(value)}
-                  placeholder="Select payment status"
+                  placeholder="Chọn trạng thái thanh toán"
                   size="large"
                   style={{ borderRadius: "8px" }}
                   allowClear
                 >
-                  <Option value="Chưa thanh toán">Not Paid</Option>
-                  <Option value="Đã thanh toán">Paid</Option>
-                  <Option value="Thất bại">Failed</Option>
+                  <Option value="Chưa thanh toán">Chưa Thanh Toán</Option>
+                  <Option value="Đã thanh toán">Đã Thanh Toán</Option>
+                  <Option value="Thất bại">Thất Bại</Option>
                 </Select>
               </div>
               <div style={filterItemStyle}>
-                <Text strong style={{ color: "#1a3c34" }}>Payment Method</Text>
+                <Text strong style={{ color: "#1a3c34" }}>Phương Thức Thanh Toán</Text>
                 <Select
                   value={orderPaymentMethodFilter}
                   onChange={(value) => setOrderPaymentMethodFilter(value)}
-                  placeholder="Select method"
+                  placeholder="Chọn phương thức"
                   size="large"
                   style={{ borderRadius: "8px" }}
                   allowClear
                 >
-                  <Option value="Chuyển khoản">Bank Transfer</Option>
+                  <Option value="Chuyển khoản">Chuyển Khoản</Option>
                   <Option value="MoMo">MoMo</Option>
                   <Option value="COD">COD</Option>
                 </Select>
               </div>
               <div style={filterItemStyle}>
-                <Text strong style={{ color: "#1a3c34" }}>Sort By</Text>
+                <Text strong style={{ color: "#1a3c34" }}>Sắp Xếp Theo</Text>
                 <Select
                   value={orderSort}
                   onChange={(value) => setOrderSort(value)}
-                  placeholder="Sort by"
+                  placeholder="Sắp xếp theo"
                   size="large"
                   style={{ borderRadius: "8px" }}
                 >
-                  <Option value="date-desc">Date: Newest</Option>
-                  <Option value="date-asc">Date: Oldest</Option>
+                  <Option value="date-desc">Ngày: Mới Nhất</Option>
+                  <Option value="date-asc">Ngày: Cũ Nhất</Option>
                 </Select>
               </div>
               <div style={{ display: "flex", alignItems: "flex-end" }}>
@@ -894,7 +818,7 @@ export default function AdminDashboard() {
                   size="large"
                   style={{ borderRadius: "8px", height: "40px", fontSize: "14px" }}
                 >
-                  Clear Filters
+                  Xóa Bộ Lọc
                 </Button>
               </div>
             </div>
@@ -911,9 +835,9 @@ export default function AdminDashboard() {
                     title={
                       <Space>
                         <Text strong style={{ color: "#1a3c34", fontSize: "16px" }}>
-                          Order by {order.userId?.username || "Unknown User"}
+                          Đơn Hàng Của {order.userId?.username || "Người Dùng Không Xác Định"}
                         </Text>
-                        <Text style={{ color: "#888" }}>({order.userId?.email || "No email"})</Text>
+                        <Text style={{ color: "#888" }}>({order.userId?.email || "Không có email"})</Text>
                       </Space>
                     }
                     bordered={false}
@@ -932,11 +856,11 @@ export default function AdminDashboard() {
                           loading={actionLoading}
                           size="large"
                         >
-                          <Option value="pending">Pending</Option>
-                          <Option value="processing">Processing</Option>
-                          <Option value="shipped">Shipped</Option>
-                          <Option value="delivered">Delivered</Option>
-                          <Option value="canceled">Canceled</Option>
+                          <Option value="pending">Chờ Xử Lý</Option>
+                          <Option value="processing">Đang Xử Lý</Option>
+                          <Option value="shipped">Đã Gửi Hàng</Option>
+                          <Option value="delivered">Đã Giao Hàng</Option>
+                          <Option value="canceled">Đã Hủy</Option>
                         </Select>
                         <Select
                           value={order.paymentStatus}
@@ -946,42 +870,42 @@ export default function AdminDashboard() {
                           loading={actionLoading}
                           size="large"
                         >
-                          <Option value="Chưa thanh toán">Not Paid</Option>
-                          <Option value="Đã thanh toán">Paid</Option>
-                          <Option value="Thất bại">Failed</Option>
+                          <Option value="Chưa thanh toán">Chưa Thanh Toán</Option>
+                          <Option value="Đã thanh toán">Đã Thanh Toán</Option>
+                          <Option value="Thất bại">Thất Bại</Option>
                         </Select>
                       </Space>
                     }
                   >
                     <Descriptions column={2} bordered size="small" style={{ background: "#fff", borderRadius: "8px" }}>
-                      <Descriptions.Item label="Order Code" span={2}>
+                      <Descriptions.Item label="Mã Đơn Hàng" span={2}>
                         <Text strong>{order.orderCode}</Text>
                       </Descriptions.Item>
-                      <Descriptions.Item label="Order Date">
+                      <Descriptions.Item label="Ngày Đặt Hàng">
                         {new Date(order.createdAt).toLocaleDateString()}
                       </Descriptions.Item>
-                      <Descriptions.Item label="Total">
+                      <Descriptions.Item label="Tổng Tiền">
                         <Text strong style={{ color: "#1a3c34" }}>
                           {order.total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")} VNĐ
                         </Text>
                       </Descriptions.Item>
-                      <Descriptions.Item label="Payment Method" span={2}>
+                      <Descriptions.Item label="Phương Thức Thanh Toán" span={2}>
                         {order.paymentMethod}
                       </Descriptions.Item>
-                      <Descriptions.Item label="Address" span={2}>
+                      <Descriptions.Item label="Địa Chỉ" span={2}>
                         {order.address
                           ? `${order.address.specificAddress}, ${order.address.ward}, ${order.address.district}, ${order.address.city}`
-                          : "No address"}
+                          : "Không có địa chỉ"}
                       </Descriptions.Item>
                     </Descriptions>
                     <Collapse style={{ marginTop: "20px", borderRadius: "8px" }}>
-                      <Panel header="Order Items" key="1">
+                      <Panel header="Sản Phẩm Trong Đơn Hàng" key="1">
                         <List
                           dataSource={order.items}
                           renderItem={(item) => (
                             <List.Item>
                               <Space>
-                                <Text>{item.productId?.name || "Unknown Product"}</Text>
+                                <Text>{item.productId?.name || "Sản Phẩm Không Xác Định"}</Text>
                                 <Text>x {item.quantity}</Text>
                                 <Text strong style={{ color: "#1a3c34" }}>
                                   {(item.price * item.quantity).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")} VNĐ
@@ -1002,13 +926,13 @@ export default function AdminDashboard() {
         return (
           <div style={{ background: "#fff", padding: "30px", borderRadius: "12px", boxShadow: "0 4px 12px rgba(0, 0, 0, 0.05)" }}>
             <Title level={4} style={{ color: "#1a3c34", marginBottom: "20px" }}>
-              Manage Users
+              Quản Lý Người Dùng
             </Title>
             <div style={filterStyle}>
               <div style={filterItemStyle}>
-                <Text strong style={{ color: "#1a3c34" }}>Search User</Text>
+                <Text strong style={{ color: "#1a3c34" }}>Tìm Kiếm Người Dùng</Text>
                 <Input
-                  placeholder="Enter username or email"
+                  placeholder="Nhập tên người dùng hoặc email"
                   value={userSearch}
                   onChange={(e) => setUserSearch(e.target.value)}
                   allowClear
@@ -1017,30 +941,30 @@ export default function AdminDashboard() {
                 />
               </div>
               <div style={filterItemStyle}>
-                <Text strong style={{ color: "#1a3c34" }}>Role</Text>
+                <Text strong style={{ color: "#1a3c34" }}>Vai Trò</Text>
                 <Select
                   value={userRoleFilter}
                   onChange={(value) => setUserRoleFilter(value)}
-                  placeholder="Select role"
+                  placeholder="Chọn vai trò"
                   size="large"
                   style={{ borderRadius: "8px" }}
                   allowClear
                 >
-                  <Option value="user">User</Option>
-                  <Option value="admin">Admin</Option>
+                  <Option value="user">Người Dùng</Option>
+                  <Option value="admin">Quản Trị Viên</Option>
                 </Select>
               </div>
               <div style={filterItemStyle}>
-                <Text strong style={{ color: "#1a3c34" }}>Sort By</Text>
+                <Text strong style={{ color: "#1a3c34" }}>Sắp Xếp Theo</Text>
                 <Select
                   value={userSort}
                   onChange={(value) => setUserSort(value)}
-                  placeholder="Sort by"
+                  placeholder="Sắp xếp theo"
                   size="large"
                   style={{ borderRadius: "8px" }}
                 >
-                  <Option value="date-desc">Date: Newest</Option>
-                  <Option value="date-asc">Date: Oldest</Option>
+                  <Option value="date-desc">Ngày: Mới Nhất</Option>
+                  <Option value="date-asc">Ngày: Cũ Nhất</Option>
                 </Select>
               </div>
               <div style={{ display: "flex", alignItems: "flex-end" }}>
@@ -1049,7 +973,7 @@ export default function AdminDashboard() {
                   size="large"
                   style={{ borderRadius: "8px", height: "40px", fontSize: "14px" }}
                 >
-                  Clear Filters
+                  Xóa Bộ Lọc
                 </Button>
               </div>
             </div>
@@ -1083,7 +1007,7 @@ export default function AdminDashboard() {
                         transition: "all 0.3s",
                       }}
                     >
-                      {user.role === "admin" ? "Revoke Admin" : "Make Admin"}
+                      {user.role === "admin" ? "Thu Hồi Quyền Admin" : "Cấp Quyền Admin"}
                     </Button>,
                   ]}
                 >
@@ -1092,9 +1016,9 @@ export default function AdminDashboard() {
                       {user.username}
                     </Text>
                     <Text style={{ color: "#888" }}>{user.email}</Text>
-                    <Text style={{ color: "#888" }}>Role: {user.role}</Text>
+                    <Text style={{ color: "#888" }}>Vai Trò: {user.role === "admin" ? "Quản Trị Viên" : "Người Dùng"}</Text>
                     <Text style={{ color: "#888" }}>
-                      Joined: {new Date(user.createdAt).toLocaleDateString()}
+                      Tham Gia: {new Date(user.createdAt).toLocaleDateString()}
                     </Text>
                   </Space>
                 </List.Item>
@@ -1106,7 +1030,7 @@ export default function AdminDashboard() {
         return (
           <div style={{ background: "#fff", padding: "30px", borderRadius: "12px", boxShadow: "0 4px 12px rgba(0, 0, 0, 0.05)" }}>
             <Title level={4} style={{ color: "#1a3c34", marginBottom: "20px" }}>
-              Manage Reviews
+              Quản Lý Đánh Giá
             </Title>
             <TabContent
               data={reviews}
@@ -1137,21 +1061,21 @@ export default function AdminDashboard() {
                         transition: "all 0.3s",
                       }}
                     >
-                      Delete
+                      Xóa
                     </Button>,
                   ]}
                 >
                   <Space direction="vertical">
                     <Text strong style={{ fontSize: "16px", color: "#1a3c34" }}>
-                      {review.productId?.name || "Unknown Product"}
+                      {review.productId?.name || "Sản Phẩm Không Xác Định"}
                     </Text>
                     <Text style={{ color: "#888" }}>
-                      By {review.userId?.username || "Anonymous"}
+                      Bởi {review.userId?.username || "Ẩn Danh"}
                     </Text>
                     <Rate disabled value={review.rating} style={{ fontSize: "16px" }} />
                     {review.comment && <Text style={{ color: "#555" }}>{review.comment}</Text>}
                     <Text style={{ color: "#888" }}>
-                      Posted: {new Date(review.createdAt).toLocaleDateString()}
+                      Đăng Vào: {new Date(review.createdAt).toLocaleDateString()}
                     </Text>
                   </Space>
                 </List.Item>
@@ -1163,7 +1087,7 @@ export default function AdminDashboard() {
         return (
           <div style={{ background: "#fff", padding: "30px", borderRadius: "12px", boxShadow: "0 4px 12px rgba(0, 0, 0, 0.05)" }}>
             <Title level={4} style={{ color: "#1a3c34", marginBottom: "20px" }}>
-              Manage Shipping
+              Quản Lý Giao Hàng
             </Title>
             <TabContent
               data={shippings}
@@ -1204,23 +1128,23 @@ export default function AdminDashboard() {
                         transition: "all 0.3s",
                       }}
                     >
-                      Update
+                      Cập Nhật
                     </Button>,
                   ]}
                 >
                   <Space direction="vertical">
                     <Text strong style={{ fontSize: "16px", color: "#1a3c34" }}>
-                      Order: {shipping.orderId?.orderCode || "Unknown Order"}
+                      Đơn Hàng: {shipping.orderId?.orderCode || "Đơn Hàng Không Xác Định"}
                     </Text>
-                    <Text style={{ color: "#888" }}>Status: {shipping.status}</Text>
+                    <Text style={{ color: "#888" }}>Trạng Thái: {shipping.status === "pending" ? "Chờ Xử Lý" : shipping.status === "shipped" ? "Đã Gửi Hàng" : "Đã Giao Hàng"}</Text>
                     <Text style={{ color: "#888" }}>
-                      Estimated Delivery:{" "}
+                      Thời Gian Giao Hàng Dự Kiến:{" "}
                       {shipping.estimatedDelivery
                         ? new Date(shipping.estimatedDelivery).toLocaleDateString()
-                        : "Not set"}
+                        : "Chưa đặt"}
                     </Text>
                     <Text style={{ color: "#888" }}>
-                      Last Updated: {new Date(shipping.updatedAt).toLocaleDateString()}
+                      Cập Nhật Lần Cuối: {new Date(shipping.updatedAt).toLocaleDateString()}
                     </Text>
                   </Space>
                 </List.Item>
@@ -1232,7 +1156,7 @@ export default function AdminDashboard() {
         return (
           <div style={{ background: "#fff", padding: "30px", borderRadius: "12px", boxShadow: "0 4px 12px rgba(0, 0, 0, 0.05)" }}>
             <Title level={4} style={{ color: "#1a3c34", marginBottom: "20px" }}>
-              Add New Promotion
+              Thêm Khuyến Mãi Mới
             </Title>
             <PromotionForm form={promotionForm} onFinish={addPromotion} loading={actionLoading} />
             <Button
@@ -1252,7 +1176,7 @@ export default function AdminDashboard() {
                 transition: "all 0.3s",
               }}
             >
-              Save Promotion
+              Lưu Khuyến Mãi
             </Button>
           </div>
         );
@@ -1260,7 +1184,7 @@ export default function AdminDashboard() {
         return (
           <div style={{ background: "#fff", padding: "30px", borderRadius: "12px", boxShadow: "0 4px 12px rgba(0, 0, 0, 0.05)" }}>
             <Title level={4} style={{ color: "#1a3c34", marginBottom: "20px" }}>
-              Manage Promotions
+              Quản Lý Khuyến Mãi
             </Title>
             <TabContent
               data={promotions}
@@ -1291,7 +1215,7 @@ export default function AdminDashboard() {
                         transition: "all 0.3s",
                       }}
                     >
-                      Delete
+                      Xóa
                     </Button>,
                   ]}
                 >
@@ -1299,15 +1223,15 @@ export default function AdminDashboard() {
                     <Text strong style={{ fontSize: "16px", color: "#1a3c34" }}>
                       {promotion.name}
                     </Text>
-                    <Text style={{ color: "#888" }}>Code: {promotion.code}</Text>
+                    <Text style={{ color: "#888" }}>Mã: {promotion.code}</Text>
                     <Text style={{ color: "#888" }}>
-                      Discount: {promotion.discount} {promotion.type === "percentage" ? "%" : "VNĐ"}
+                      Giảm Giá: {promotion.discount} {promotion.type === "percentage" ? "%" : "VNĐ"}
                     </Text>
                     <Text style={{ color: "#888" }}>
-                      Start: {new Date(promotion.startDate).toLocaleDateString()}
+                      Bắt Đầu: {new Date(promotion.startDate).toLocaleDateString()}
                     </Text>
                     <Text style={{ color: "#888" }}>
-                      End: {new Date(promotion.endDate).toLocaleDateString()}
+                      Kết Thúc: {new Date(promotion.endDate).toLocaleDateString()}
                     </Text>
                   </Space>
                 </List.Item>
@@ -1325,7 +1249,7 @@ export default function AdminDashboard() {
       <Sider width={250} style={{ background: "#1a3c34" }}>
         <div style={{ padding: "20px", textAlign: "center" }}>
           <Title level={4} style={{ color: "#fff", margin: 0 }}>
-            Admin Dashboard
+            Bảng Điều Khiển Quản Trị
           </Title>
         </div>
         <Menu
@@ -1338,15 +1262,29 @@ export default function AdminDashboard() {
         />
       </Sider>
       <Layout>
-        <Header style={{ background: "#fff", padding: "0 24px", boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)" }}>
+        <Header style={{ background: "#fff", padding: "0 24px", boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <Title level={3} style={{ margin: 0, color: "#1a3c34" }}>
             {menuItems.find((item) => item.key === currentMenu)?.label}
           </Title>
+          <Button
+            type="default"
+            icon={<HomeOutlined />}
+            onClick={() => navigate("/")}
+            style={{
+              borderRadius: "8px",
+              padding: "0 16px",
+              height: "40px",
+              fontSize: "14px",
+              transition: "all 0.3s",
+            }}
+          >
+            Quay Về Trang Chủ
+          </Button>
         </Header>
         <Content style={{ margin: "24px", background: "#f0f2f5" }}>
           {renderContent()}
           <Modal
-            title={modal.type === "product" ? "Update Product" : "Update Shipping"}
+            title={modal.type === "product" ? "Cập Nhật Sản Phẩm" : "Cập Nhật Giao Hàng"}
             open={modal.visible}
             onCancel={() => {
               setModal({ visible: false, type: "", data: null });
@@ -1379,7 +1317,7 @@ export default function AdminDashboard() {
                     marginTop: "10px",
                   }}
                 >
-                  Update Product
+                  Cập Nhật Sản Phẩm
                 </Button>
               </>
             ) : (
@@ -1394,14 +1332,14 @@ export default function AdminDashboard() {
                 }}
                 layout="vertical"
               >
-                <Form.Item name="status" label="Shipping Status">
+                <Form.Item name="status" label="Trạng Thái Giao Hàng">
                   <Select style={{ borderRadius: "8px" }}>
-                    <Option value="pending">Pending</Option>
-                    <Option value="shipped">Shipped</Option>
-                    <Option value="delivered">Delivered</Option>
+                    <Option value="pending">Chờ Xử Lý</Option>
+                    <Option value="shipped">Đã Gửi Hàng</Option>
+                    <Option value="delivered">Đã Giao Hàng</Option>
                   </Select>
                 </Form.Item>
-                <Form.Item name="estimatedDelivery" label="Estimated Delivery">
+                <Form.Item name="estimatedDelivery" label="Thời Gian Giao Hàng Dự Kiến">
                   <DatePicker style={{ width: "100%", borderRadius: "8px" }} />
                 </Form.Item>
                 <Button
@@ -1417,7 +1355,7 @@ export default function AdminDashboard() {
                     fontSize: "14px",
                   }}
                 >
-                  Update Shipping
+                  Cập Nhật Giao Hàng
                 </Button>
               </Form>
             )}

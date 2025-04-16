@@ -5,23 +5,21 @@ import { useSearch } from "../Contexts/SearchContext";
 
 export default function SearchBar() {
   const { searchTerm, setSearchTerm } = useSearch();
-  const [inputValue, setInputValue] = useState(searchTerm); // Local state for input value
+  const [inputValue, setInputValue] = useState(searchTerm);
 
-  // Debounce effect to update searchTerm after typing stops
   useEffect(() => {
     const debounceTimer = setTimeout(() => {
-      setSearchTerm(inputValue); // Update searchTerm after 500ms delay
+      setSearchTerm(inputValue);
     }, 500);
 
-    // Cleanup: Clear the timer if inputValue changes before 500ms
     return () => clearTimeout(debounceTimer);
   }, [inputValue, setSearchTerm]);
 
   return (
     <Input
       placeholder="Tìm sản phẩm"
-      value={inputValue} // Use local state for controlled input
-      onChange={(e) => setInputValue(e.target.value)} // Update local state on change
+      value={inputValue}
+      onChange={(e) => setInputValue(e.target.value)}
       prefix={<SearchOutlined style={{ color: "#1a3c34" }} />}
       style={{
         width: "240px",

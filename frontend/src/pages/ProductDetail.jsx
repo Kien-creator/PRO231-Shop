@@ -21,7 +21,6 @@ export default function ProductDetail() {
       setLoading(true);
       try {
         const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/products/${id}`);
-        console.log("Product detail response:", response.data);
         setProduct(response.data);
       } catch (err) {
         console.error("Failed to load product:", err.response?.data || err.message);
@@ -77,25 +76,23 @@ export default function ProductDetail() {
         maxWidth: "1200px",
         margin: "0 auto",
         padding: "30px",
-        background: "#F1F8E9", // Softer green background
-        borderRadius: "16px", // Increased border radius for a smoother look
-        boxShadow: "0 6px 16px rgba(0, 0, 0, 0.1)", // Slightly darker shadow for better contrast
+        background: "#E8F5E9",
+        borderRadius: "16px",
+        boxShadow: "0 6px 16px rgba(0, 0, 0, 0.1)",
       }}
     >
-      <Card style={{ borderRadius: "12px", background: "#fff", padding: "20px" }}> {/* Added padding */}
         <Space direction="horizontal" size="large" style={{ width: "100%" }}>
-          {/* Product Image */}
           <div
             style={{
-              transition: "transform 0.3s ease, box-shadow 0.3s ease", // Added smooth shadow transition
+              transition: "transform 0.3s ease, box-shadow 0.3s ease",
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.transform = "scale(1.05)";
-              e.currentTarget.style.boxShadow = "0 8px 20px rgba(0, 0, 0, 0.15)"; // Enhanced hover shadow
+              e.currentTarget.style.boxShadow = "0 8px 20px rgba(0, 0, 0, 0.15)";
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.transform = "scale(1)";
-              e.currentTarget.style.boxShadow = "none"; // Reset shadow
+              e.currentTarget.style.boxShadow = "none";
             }}
           >
             {product.images && product.images.length > 0 ? (
@@ -106,8 +103,8 @@ export default function ProductDetail() {
                   width: "300px",
                   height: "300px",
                   objectFit: "cover",
-                  borderRadius: "12px", // Increased border radius
-                  border: "1px solid #ddd", // Softer border color
+                  borderRadius: "12px",
+                  border: "1px solid #ddd",
                 }}
               />
             ) : (
@@ -119,8 +116,8 @@ export default function ProductDetail() {
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  borderRadius: "12px", // Increased border radius
-                  border: "1px solid #ddd", // Softer border color
+                  borderRadius: "12px",
+                  border: "1px solid #ddd",
                 }}
               >
                 <Text type="secondary">Không có ảnh</Text>
@@ -128,22 +125,21 @@ export default function ProductDetail() {
             )}
           </div>
 
-          {/* Product Details */}
           <Space direction="vertical" size="middle" style={{ flex: 1 }}>
-            <Title level={3} style={{ color: "#2E7D32" }}> {/* Updated title color */}
+            <Title level={3} style={{ color: "#1a3c34" }}>
               {product.name}
             </Title>
             <Text style={{ fontSize: "20px", color: "#e91e63", fontWeight: "bold" }}>
               Giá: {product.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")} VNĐ
             </Text>
-            <Text style={{ color: "#616161" }}> {/* Updated text color */}
+            <Text style={{ color: "#616161" }}>
               Tồn kho: {product.stock}
             </Text>
-            <Text style={{ color: "#616161" }}> {/* Updated text color */}
+            <Text style={{ color: "#616161" }}>
               Mô tả: {product.description || "Không có mô tả."}
             </Text>
             <Space>
-              <Text style={{ color: "#616161" }}> {/* Updated text color */}
+              <Text style={{ color: "#616161" }}>
                 Số lượng:
               </Text>
               <InputNumber
@@ -152,8 +148,8 @@ export default function ProductDetail() {
                 value={quantity}
                 onChange={(value) => setQuantity(value)}
                 style={{
-                  borderRadius: "8px", // Added border radius
-                  border: "1px solid #ddd", // Softer border color
+                  borderRadius: "8px",
+                  border: "1px solid #ddd",
                 }}
               />
             </Space>
@@ -162,28 +158,27 @@ export default function ProductDetail() {
               size="large"
               onClick={handleAddToCart}
               style={{
-                background: "#FF9800", // Shopee orange for secondary action
+                background: "#FF9800",
                 borderColor: "#FF9800",
                 borderRadius: "8px",
-                padding: "0 30px", // Added padding for better button size
+                padding: "0 30px",
                 height: "48px",
-                fontSize: "16px", // Adjusted font size for better readability
-                transition: "transform 0.3s ease, background-color 0.3s ease", // Added smooth background transition
+                fontSize: "16px",
+                transition: "transform 0.3s ease, background-color 0.3s ease",
               }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.transform = "scale(1.05)";
-                e.currentTarget.style.backgroundColor = "#FFC107"; // Slightly lighter orange on hover
+                e.currentTarget.style.backgroundColor = "#FFC107";
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.transform = "scale(1)";
-                e.currentTarget.style.backgroundColor = "#FF9800"; // Reset background color
+                e.currentTarget.style.backgroundColor = "#FF9800";
               }}
             >
               Thêm vào Giỏ Hàng
             </Button>
           </Space>
         </Space>
-      </Card>
     </div>
   );
 }
