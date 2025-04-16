@@ -37,7 +37,7 @@ export default function NavBar() {
         {/* Fake Shop Logo */}
         <Link to="/">
           <img
-            src="src\assets\logo.jpg" 
+            src="src\assets\logo.png" 
             alt="Fake Shop Logo"
             style={{
               height: "40px",
