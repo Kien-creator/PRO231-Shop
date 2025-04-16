@@ -1,155 +1,79 @@
 const express = require("express");
 const router = express.Router();
-const mongoose = require("mongoose");
 const Cart = require("../models/cart");
-const Product = require("../models/product"); // Import Product model
-const authenticateToken = require("../middleware/auth");
+const Product = require("../models/product");
+const authMiddleware = require("../middlewares/authMiddleware");
 
-async function fetchCart(userId) {
-  return await Cart.findOne({ userId }).populate("items.productId");
-}
+// routes/cart.js
+router.get("/", authMiddleware, async (req, res, next) => {
+  try {
+    const userId = req.user.id;
+    console.log("Fetching cart for userId:", userId); // Log the userId
 
-function handleError(res, err, message) {
-  res.status(500).json({ message: "Server error", details: err.message });
-}
+    let cart = await Cart.findOne({ userId }).populate("items.productId");
+    console.log("Cart found:", cart); // Log the cart before filtering
 
-router.post("/add", authenticateToken, async (req, res) => {
+    if (!cart) {
+      console.log("No cart found, returning empty array");
+      return res.status(200).json([]);
+    }
+
+    // Filter out items where productId is null
+    cart.items = cart.items.filter((item) => item.productId !== null);
+    console.log("Filtered cart items:", cart.items); // Log the filtered items
+
+    await cart.save();
+    console.log("Returning cart items:", cart.items); // Log the final response
+
+    res.status(200).json(cart.items);
+  } catch (err) {
+    console.error("Error fetching cart:", err);
+    next(err);
+  }
+});
+
+router.post("/add", authMiddleware, async (req, res, next) => {
   try {
     const { productId, quantity } = req.body;
-
-    if (!productId || quantity === undefined || quantity === null) {
-      return res.status(400).json({ message: "Product ID and quantity are required" });
-    }
-
-    if (!mongoose.Types.ObjectId.isValid(productId)) {
-      return res.status(400).json({ message: "Invalid product ID" });
-    }
-
-    if (!Number.isInteger(quantity) || quantity < 1) {
-      return res.status(400).json({ message: "Quantity must be a positive integer" });
-    }
-
-    // Fetch product details from the database
     const product = await Product.findById(productId);
     if (!product) {
       return res.status(404).json({ message: "Product not found" });
     }
-
-    // Check stock availability
-    if (quantity > product.quantityLeft) {
-      return res.status(400).json({ 
-        message: `Not enough stock! Only ${product.quantityLeft} items left.` 
-      });
+    if (product.stock < quantity) {
+      return res.status(400).json({ message: "Insufficient stock" });
     }
 
-    let cart = await fetchCart(req.user.id);
+    let cart = await Cart.findOne({ userId: req.user.id });
     if (!cart) {
       cart = new Cart({ userId: req.user.id, items: [] });
     }
 
-    const itemIndex = cart.items.findIndex((item) => {
-      if (!item.productId) {
-        return false;
-      }
-      return item.productId.toString() === productId;
-    });
-
+    const itemIndex = cart.items.findIndex((item) => item.productId.toString() === productId);
     if (itemIndex > -1) {
-      // If the product is already in the cart, check total quantity
-      const newQuantity = cart.items[itemIndex].quantity + quantity;
-      if (newQuantity > product.quantityLeft) {
-        return res.status(400).json({ 
-          message: `Not enough stock! Only ${product.quantityLeft} items left.` 
-        });
-      }
-      cart.items[itemIndex].quantity = newQuantity;
+      cart.items[itemIndex].quantity += quantity;
     } else {
-      const productObjectId = new mongoose.Types.ObjectId(productId);
-      cart.items.push({ productId: productObjectId, quantity });
+      cart.items.push({ productId, quantity });
     }
 
     await cart.save();
-    res.status(200).json(cart);
+    res.status(200).json({ message: "Product added to cart", cart });
   } catch (err) {
-    handleError(res, err, "POST /add - Error:");
+    next(err);
   }
 });
 
-router.get("/", authenticateToken, async (req, res) => {
+router.delete("/remove/:productId", authMiddleware, async (req, res, next) => {
   try {
-    const cart = await fetchCart(req.user.id);
-    if (!cart) {
-      return res.status(404).json({ message: "Cart not found" });
-    }
-    res.status(200).json(cart);
-  } catch (err) {
-    handleError(res, err, "GET / - Error:");
-  }
-});
-
-router.put("/update/:itemId", authenticateToken, async (req, res) => {
-  try {
-    const { itemId } = req.params;
-    const { quantity } = req.body;
-
-    if (!quantity || quantity < 1) {
-      return res.status(400).json({ message: "Quantity must be at least 1" });
-    }
-
-    const cart = await fetchCart(req.user.id);
+    const cart = await Cart.findOne({ userId: req.user.id });
     if (!cart) {
       return res.status(404).json({ message: "Cart not found" });
     }
 
-    const itemIndex = cart.items.findIndex(
-      (item) => item._id.toString() === itemId
-    );
-    if (itemIndex === -1) {
-      return res.status(404).json({ message: "Item not found in cart" });
-    }
-
-    cart.items[itemIndex].quantity = quantity;
+    cart.items = cart.items.filter((item) => item.productId.toString() !== req.params.productId);
     await cart.save();
-
-    const updatedCart = await fetchCart(req.user.id);
-    res.status(200).json(updatedCart);
+    res.status(200).json({ message: "Product removed from cart", cart });
   } catch (err) {
-    handleError(res, err, "PUT /update - Error:");
-  }
-});
-
-router.delete("/remove/:itemId", authenticateToken, async (req, res) => {
-  try {
-    const { itemId } = req.params;
-
-    const cart = await fetchCart(req.user.id);
-    if (!cart) {
-      return res.status(404).json({ message: "Cart not found" });
-    }
-
-    const itemIndex = cart.items.findIndex(
-      (item) => item._id.toString() === itemId
-    );
-    if (itemIndex === -1) {
-      return res.status(404).json({ message: "Item not found in cart" });
-    }
-
-    cart.items.splice(itemIndex, 1);
-    await cart.save();
-
-    const updatedCart = await fetchCart(req.user.id);
-    res.status(200).json(updatedCart);
-  } catch (err) {
-    handleError(res, err, "DELETE /remove - Error:");
-  }
-});
-
-router.delete("/clear", authenticateToken, async (req, res) => {
-  try {
-    await Cart.deleteOne({ userId: req.user.id });
-    res.status(200).json({ message: "Cart cleared" });
-  } catch (err) {
-    handleError(res, err, "DELETE /clear - Error:");
+    next(err);
   }
 });
 

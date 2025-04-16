@@ -1,21 +1,22 @@
-import React from 'react';
-import { Layout } from 'antd';
-import { Outlet } from 'react-router-dom';
-import Header from '../components/Header'; // Import Header instead of NavBar
-import Footer from '../components/Footer';
+// src/layouts/MainLayout.jsx
+import React from "react";
+import { Layout } from "antd";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
+import NavBar from "../components/NavBar";
 
-const { Content, Footer: AntFooter } = Layout;
+const { Content } = Layout;
 
-export default function MainLayout() {
+export default function MainLayout({ children }) {
   return (
-    <Layout>
-      <Header /> 
-      <Content style={{ minHeight: '80vh' }}>
-        <Outlet />
+    <Layout style={{ minHeight: "100vh", background: "#f0f2f5" }}>
+      <Header>
+        <NavBar />
+      </Header>
+      <Content style={{ padding: "40px 24px", maxWidth: "1400px", margin: "0 auto", width: "100%" }}>
+        {children}
       </Content>
-      <AntFooter>
-        <Footer />
-      </AntFooter>
+      <Footer />
     </Layout>
   );
 }

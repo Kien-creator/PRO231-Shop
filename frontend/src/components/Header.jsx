@@ -1,7 +1,7 @@
 import React from "react";
 import { useLocation } from "react-router-dom";
 import NavBar from "./NavBar";
-import { SearchBar } from "./SearchBar";
+import SearchBar from "./SearchBar";
 import { useSearch } from "../Contexts/SearchContext";
 
 export default function Header() {
@@ -29,11 +29,6 @@ export default function Header() {
   return (
     <div style={headerStyle}>
       <NavBar />
-      {showSearchBar && (
-        <div style={searchBarContainerStyle}>
-          <SearchBar searchTerm={searchTerm} onSearch={handleSearch} />
-        </div>
-      )}
     </div>
   );
 }

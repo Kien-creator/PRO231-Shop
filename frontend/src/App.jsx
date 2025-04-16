@@ -1,43 +1,40 @@
-import React from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import { AuthProvider } from "./Contexts/AuthContext";
-import { SearchProvider } from "./Contexts/SearchContext";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import MainLayout from "./layouts/MainLayout";
 import Home from "./pages/Home";
 import Shop from "./pages/Shop";
-import Cart from "./pages/Cart";
-import Login from "./pages/Login";
-import SignUp from "./pages/SignUp";
-import Settings from "./pages/Settings";
-import AdminDashboard from "./pages/AdminDashboard";
-import Checkout from "./pages/Checkout";
-import Order from "./pages/Order";
 import ProductDetail from "./pages/ProductDetail";
-import "antd/dist/reset.css";
+import Cart from "./pages/Cart";
+import Orders from "./pages/Order";
+import Settings from "./pages/Settings";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import AdminDashboard from "./pages/AdminDashboard";
+import Promotion from "./pages/Promotion";
+import { SearchProvider } from "./Contexts/SearchContext";
+import { AuthProvider } from "./Contexts/AuthContext";
+import { CartProvider } from "./Contexts/CartContext";
 
-function App() {
+export default function App() {
   return (
     <Router>
       <AuthProvider>
         <SearchProvider>
+          <CartProvider> 
           <Routes>
-            <Route element={<MainLayout />}>
-              <Route path="/" element={<Home />} />
-              <Route path="/shop" element={<Shop />} />
-              <Route path="/cart" element={<Cart />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/signup" element={<SignUp />} />
-              <Route path="/settings" element={<Settings />} />
-              <Route path="/admin" element={<AdminDashboard />} />
-              <Route path="/checkout" element={<Checkout />} />
-              <Route path="/orders" element={<Order />} />
-              <Route path="/products/:id" element={<ProductDetail />} />
-            </Route>
+            <Route path="/" element={<MainLayout><Home /></MainLayout>} />
+            <Route path="/shop" element={<MainLayout><Shop /></MainLayout>} />
+            <Route path="/product/:id" element={<MainLayout><ProductDetail /></MainLayout>} />
+            <Route path="/cart" element={<MainLayout><Cart /></MainLayout>} />
+            <Route path="/orders" element={<MainLayout><Orders /></MainLayout>} />
+            <Route path="/promotion" element={<MainLayout><Promotion /></MainLayout>} />
+            <Route path="/settings" element={<MainLayout><Settings /></MainLayout>} />
+            <Route path="/login" element={<MainLayout><Login /></MainLayout>} />
+            <Route path="/register" element={<MainLayout><Register /></MainLayout>} />
+            <Route path="/admin" element={<AdminDashboard />} />
           </Routes>
+          </CartProvider>
         </SearchProvider>
       </AuthProvider>
     </Router>
   );
 }
-
-export default App;

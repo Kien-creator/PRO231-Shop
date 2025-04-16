@@ -1,527 +1,165 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Tabs, Form, Input, Button, message, Select } from "antd";
-import { useNavigate } from "react-router-dom";
+import { Form, Input, Button, message, Typography, Spin } from "antd";
 import axios from "axios";
 import { AuthContext } from "../Contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 
-const { Option } = Select;
+const { Title, Text } = Typography;
 
 export default function Settings() {
+  const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
-  const [userProfile, setUserProfile] = useState(null);
-  const [activeTab, setActiveTab] = useState("1");
-  const [cities, setCities] = useState([]);
-  const [districts, setDistricts] = useState([]);
-  const [wards, setWards] = useState([]);
-  const [selectedCity, setSelectedCity] = useState(null);
-  const [selectedDistrict, setSelectedDistrict] = useState(null);
-  const [isAddressTabLoaded, setIsAddressTabLoaded] = useState(false);
   const { isLoggedIn } = useContext(AuthContext);
   const navigate = useNavigate();
-  const [profileForm] = Form.useForm();
-  const [passwordForm] = Form.useForm();
-  const [addressForm] = Form.useForm();
+  const token = localStorage.getItem("token");
 
   useEffect(() => {
     if (!isLoggedIn) {
+      message.error("Please log in to access settings!");
       navigate("/login");
       return;
     }
-    fetchUserProfile();
-    fetchCities();
+    fetchUser();
   }, [isLoggedIn, navigate]);
 
-  const fetchCities = async () => {
-    try {
-      const response = await axios.get("https://provinces.open-api.vn/api/p/");
-      setCities(response.data);
-    } catch (err) {
-      message.error("Failed to load cities.");
-    }
-  };
-
-  const fetchDistricts = async (cityCode) => {
-    try {
-      const response = await axios.get(`https://provinces.open-api.vn/api/p/${cityCode}?depth=2`);
-      setDistricts(response.data.districts);
-      setWards([]);
-      setSelectedDistrict(null);
-      addressForm.setFieldsValue({ district: undefined, ward: undefined });
-    } catch (err) {
-      message.error("Failed to load districts.");
-    }
-  };
-
-  const fetchWards = async (districtCode) => {
-    try {
-      const response = await axios.get(`https://provinces.open-api.vn/api/d/${districtCode}?depth=2`);
-      setWards(response.data.wards);
-      addressForm.setFieldsValue({ ward: undefined });
-    } catch (err) {
-      message.error("Failed to load wards.");
-    }
-  };
-
-  useEffect(() => {
-    if (userProfile && activeTab === "1") {
-      profileForm.setFieldsValue({
-        username: userProfile.username,
-        email: userProfile.email,
-        gender: userProfile.gender,
-      });
-    }
-  }, [userProfile, activeTab, profileForm]);
-
-  useEffect(() => {
-    if (userProfile && activeTab === "3" && !isAddressTabLoaded && userProfile.address) {
-      addressForm.setFieldsValue({
-        name: userProfile.address.name,
-        phone: userProfile.address.phone,
-        city: userProfile.address.city,
-        district: userProfile.address.district,
-        ward: userProfile.address.ward,
-        specificAddress: userProfile.address.specificAddress,
-      });
-      setIsAddressTabLoaded(true);
-    }
-  }, [userProfile, activeTab, addressForm, isAddressTabLoaded]);
-
-  useEffect(() => {
-    if (userProfile && activeTab === "3" && userProfile.address) {
-      const city = cities.find((c) => c.name === userProfile.address.city);
-      if (city && selectedCity !== city.code) {
-        setSelectedCity(city.code);
-        fetchDistricts(city.code);
-      }
-      const district = districts.find((d) => d.name === userProfile.address.district);
-      if (district && selectedDistrict !== district.code) {
-        setSelectedDistrict(district.code);
-        fetchWards(district.code);
-      }
-    }
-  }, [userProfile, activeTab, cities, districts]);
-
-  const fetchUserProfile = async () => {
+  const fetchUser = async () => {
     setLoading(true);
     try {
-      const token = localStorage.getItem("token");
-      const response = await axios.get(
-        `${import.meta.env.VITE_API_URL}/api/auth/profile`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-      setUserProfile(response.data);
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/user/me`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      form.setFieldsValue({
+        username: response.data.username,
+        email: response.data.email,
+      });
     } catch (err) {
-      message.error(
-        err.response?.data?.message || "Failed to load user profile."
-      );
+      message.error("Failed to load user data.");
     } finally {
       setLoading(false);
     }
   };
 
-  const onProfileFinish = async (values) => {
+  const onFinish = async (values) => {
     setLoading(true);
-    const token = localStorage.getItem("token");
-
     try {
-      const profileUpdates = {};
-      if (values.username) profileUpdates.username = values.username;
-      if (values.email) profileUpdates.email = values.email;
-      if (values.gender) profileUpdates.gender = values.gender;
-
-      if (Object.keys(profileUpdates).length > 0) {
-        await axios.put(
-          `${import.meta.env.VITE_API_URL}/api/auth/me`,
-          profileUpdates,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
-        message.success("Profile updated successfully!");
-      } else {
-        message.info("No profile changes provided.");
-      }
-
-      await fetchUserProfile();
-    } catch (err) {
-      message.error(err.response?.data?.message || "Failed to update profile.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const onPasswordFinish = async (values) => {
-    setLoading(true);
-    const token = localStorage.getItem("token");
-
-    try {
-      if (values.newPassword !== values.confirmNewPassword) {
-        message.error("New password and confirm password do not match!");
-        setLoading(false);
-        return;
-      }
-
       await axios.put(
-        `${import.meta.env.VITE_API_URL}/api/auth/me`,
-        {
-          oldPassword: values.oldPassword,
-          newPassword: values.newPassword,
-        },
+        `${import.meta.env.VITE_API_URL}/api/user/me`,
+        values,
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      message.success("Password updated successfully!");
-      passwordForm.resetFields();
+      message.success("Profile updated successfully!");
     } catch (err) {
-      message.error(
-        err.response?.data?.message || "Failed to update password."
-      );
+      message.error("Failed to update profile.");
     } finally {
       setLoading(false);
     }
   };
 
-  const onAddressFinish = async (values) => {
-    setLoading(true);
-    const token = localStorage.getItem("token");
-
-    try {
-      const addressUpdates = {
-        name: values.name,
-        phone: values.phone,
-        city: values.city,
-        district: values.district,
-        ward: values.ward,
-        specificAddress: values.specificAddress,
-      };
-
-      const hasAddressChanges = Object.values(addressUpdates).some(
-        (value) => value
-      );
-      if (hasAddressChanges) {
-        const missingFields = [];
-        if (!addressUpdates.name) missingFields.push("Name");
-        if (!addressUpdates.phone) missingFields.push("Phone Number");
-        if (!addressUpdates.city) missingFields.push("City");
-        if (!addressUpdates.district) missingFields.push("District");
-        if (!addressUpdates.ward) missingFields.push("Ward");
-        if (!addressUpdates.specificAddress)
-          missingFields.push("Specific Address");
-
-        if (missingFields.length > 0) {
-          message.error(
-            `Please fill in all address fields: ${missingFields.join(", ")}`
-          );
-          setLoading(false);
-          return;
-        }
-
-        await axios.put(
-          `${import.meta.env.VITE_API_URL}/api/auth/address`,
-          addressUpdates,
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
-        message.success("Address updated successfully!");
-      } else {
-        message.info("No address changes provided.");
-      }
-
-      await fetchUserProfile();
-      setIsAddressTabLoaded(false);
-    } catch (err) {
-      message.error(err.response?.data?.message || "Failed to update address.");
-    } finally {
-      setLoading(false);
-    }
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    message.success("Logged out successfully!");
+    navigate("/login");
   };
 
-  const pageStyle = {
-    fontFamily: "Arial, sans-serif",
-    margin: "0",
-    padding: "20px",
-    display: "flex",
-  };
-
-  const sidebarStyle = {
-    width: "200px",
-    padding: "10px",
-    borderRight: "1px solid #ddd",
-  };
-
-  const contentStyle = {
-    flex: 1,
-    padding: "20px",
-  };
-
-  const formStyle = {
-    maxWidth: "400px",
-    margin: "0 auto",
-    padding: "20px",
-    border: "1px solid #ddd",
-    borderRadius: "8px",
-    backgroundColor: "#fff",
-    boxShadow: "0 2px 5px rgba(0, 0, 0, 0.1)",
-  };
-
-  const buttonStyle = {
-    backgroundColor: "#ff6200",
-    borderColor: "#ff6200",
-  };
-
-  if (!isLoggedIn) return null;
+  if (loading) return <div style={{ textAlign: "center", padding: "40px" }}><Spin size="large" /></div>;
 
   return (
-    <div style={pageStyle}>
-      <div style={contentStyle}>
-        <div style={formStyle}>
-          <h2 style={{ textAlign: "center" }}>My Profile</h2>
-          <Tabs
-            defaultActiveKey="1"
-            onChange={(key) => {
-              setActiveTab(key);
-              if (key === "3") setIsAddressTabLoaded(false);
+    <div
+      style={{
+        maxWidth: "600px",
+        margin: "0 auto",
+        padding: "30px",
+        background: "#F4F6F8", // Light gray background for a modern look
+        borderRadius: "16px", // Slightly larger border radius for a softer appearance
+        boxShadow: "0 6px 20px rgba(0, 0, 0, 0.1)", // Enhanced shadow for depth
+        border: "1px solid #E0E0E0", // Subtle border for better definition
+      }}
+    >
+      <Title
+        level={3}
+        style={{
+          color: "#1a3c34", // Dark green for the title
+          textAlign: "center",
+          marginBottom: "24px", // Consistent spacing
+          fontWeight: "bold", // Bold title for emphasis
+        }}
+      >
+        Cài Đặt 
+      </Title>
+      <Form
+        form={form}
+        layout="vertical"
+        onFinish={onFinish}
+      >
+        <Form.Item
+          label="Tên Người Dùng"
+          name="username"
+          rules={[{ required: true, message: "Vui lòng nhập tên người dùng của bạn!" }]}
+        >
+          <Input
+            placeholder="Nhập tên người dùng của bạn"
+            style={{
+              borderRadius: "8px", // Rounded input fields
+              padding: "10px",
+              border: "1px solid #D1D5DB", // Light border for inputs
+              background: "#FFFFFF", // White background for inputs
             }}
-            items={[
-              {
-                key: "1",
-                label: "Profile",
-                children: (
-                  <Form
-                    form={profileForm}
-                    name="profile"
-                    onFinish={onProfileFinish}
-                    layout="vertical"
-                  >
-                    <Form.Item name="username" label="Username">
-                      <Input placeholder="Enter your username" />
-                    </Form.Item>
-                    <Form.Item name="email" label="Email">
-                      <Input placeholder="Enter your email" />
-                    </Form.Item>
-                    <Form.Item name="gender" label="Gender">
-                      <Select placeholder="Select your gender" allowClear>
-                        <Option value="Male">Male</Option>
-                        <Option value="Female">Female</Option>
-                        <Option value="Other">Other</Option>
-                      </Select>
-                    </Form.Item>
-                    <Form.Item>
-                      <Button
-                        type="primary"
-                        htmlType="submit"
-                        loading={loading}
-                        block
-                        style={buttonStyle}
-                      >
-                        Save
-                      </Button>
-                    </Form.Item>
-                  </Form>
-                ),
-              },
-              {
-                key: "2",
-                label: "Password",
-                children: (
-                  <Form
-                    form={passwordForm}
-                    name="password"
-                    onFinish={onPasswordFinish}
-                    layout="vertical"
-                  >
-                    <Form.Item
-                      name="oldPassword"
-                      label="Old Password"
-                      rules={[
-                        {
-                          required: true,
-                          message: "Please enter your old password!",
-                        },
-                      ]}
-                    >
-                      <Input.Password placeholder="Enter your old password" />
-                    </Form.Item>
-                    <Form.Item
-                      name="newPassword"
-                      label="New Password"
-                      rules={[
-                        {
-                          required: true,
-                          message: "Please enter your new password!",
-                        },
-                      ]}
-                    >
-                      <Input.Password placeholder="Enter your new password" />
-                    </Form.Item>
-                    <Form.Item
-                      name="confirmNewPassword"
-                      label="Confirm New Password"
-                      rules={[
-                        {
-                          required: true,
-                          message: "Please confirm your new password!",
-                        },
-                      ]}
-                    >
-                      <Input.Password placeholder="Confirm your new password" />
-                    </Form.Item>
-                    <Form.Item>
-                      <Button
-                        type="primary"
-                        htmlType="submit"
-                        loading={loading}
-                        block
-                        style={buttonStyle}
-                      >
-                        Save
-                      </Button>
-                    </Form.Item>
-                  </Form>
-                ),
-              },
-              {
-                key: "3",
-                label: "Address",
-                children: (
-                  <Form
-                    form={addressForm}
-                    name="address"
-                    onFinish={onAddressFinish}
-                    layout="vertical"
-                  >
-                    <Form.Item
-                      name="name"
-                      label="Name"
-                      rules={[
-                        { required: false, message: "Please enter your name!" },
-                      ]}
-                    >
-                      <Input placeholder="Enter your name" />
-                    </Form.Item>
-                    <Form.Item
-                      name="phone"
-                      label="Phone Number"
-                      rules={[
-                        {
-                          required: false,
-                          message: "Please enter your phone number!",
-                        },
-                      ]}
-                    >
-                      <Input placeholder="Enter your phone number" />
-                    </Form.Item>
-                    <Form.Item
-                      name="city"
-                      label="City"
-                      rules={[
-                        { required: false, message: "Please select your city!" },
-                      ]}
-                    >
-                      <Select
-                        showSearch
-                        placeholder="Select your city"
-                        optionFilterProp="children"
-                        onChange={(value) => {
-                          const city = cities.find((c) => c.name === value);
-                          setSelectedCity(city?.code || null);
-                          if (city) fetchDistricts(city.code);
-                        }}
-                        filterOption={(input, option) =>
-                          option.children.toLowerCase().includes(input.toLowerCase())
-                        }
-                      >
-                        {cities.map((city) => (
-                          <Option key={city.code} value={city.name}>
-                            {city.name}
-                          </Option>
-                        ))}
-                      </Select>
-                    </Form.Item>
-                    <Form.Item
-                      name="district"
-                      label="District"
-                      rules={[
-                        {
-                          required: false,
-                          message: "Please select your district!",
-                        },
-                      ]}
-                    >
-                      <Select
-                        showSearch
-                        placeholder="Select your district"
-                        optionFilterProp="children"
-                        onChange={(value) => {
-                          const district = districts.find((d) => d.name === value);
-                          setSelectedDistrict(district?.code || null);
-                          if (district) fetchWards(district.code);
-                        }}
-                        filterOption={(input, option) =>
-                          option.children.toLowerCase().includes(input.toLowerCase())
-                        }
-                        disabled={!selectedCity}
-                      >
-                        {districts.map((district) => (
-                          <Option key={district.code} value={district.name}>
-                            {district.name}
-                          </Option>
-                        ))}
-                      </Select>
-                    </Form.Item>
-                    <Form.Item
-                      name="ward"
-                      label="Ward"
-                      rules={[
-                        { required: false, message: "Please select your ward!" },
-                      ]}
-                    >
-                      <Select
-                        showSearch
-                        placeholder="Select your ward"
-                        optionFilterProp="children"
-                        filterOption={(input, option) =>
-                          option.children.toLowerCase().includes(input.toLowerCase())
-                        }
-                        disabled={!selectedDistrict}
-                      >
-                        {wards.map((ward) => (
-                          <Option key={ward.code} value={ward.name}>
-                            {ward.name}
-                          </Option>
-                        ))}
-                      </Select>
-                    </Form.Item>
-                    <Form.Item
-                      name="specificAddress"
-                      label="Specific Address"
-                      rules={[
-                        {
-                          required: false,
-                          message: "Please enter your specific address!",
-                        },
-                      ]}
-                    >
-                      <Input placeholder="Enter your specific address" />
-                    </Form.Item>
-                    <Form.Item>
-                      <Button
-                        type="primary"
-                        htmlType="submit"
-                        loading={loading}
-                        block
-                        style={buttonStyle}
-                      >
-                        Save
-                      </Button>
-                    </Form.Item>
-                  </Form>
-                ),
-              },
-            ]}
           />
-        </div>
-      </div>
+        </Form.Item>
+
+        <Form.Item
+          label="Email"
+          name="email"
+          rules={[{ required: true, message: "Vui lòng nhập email của bạn!" }]}
+        >
+          <Input
+            placeholder="Nhập email của bạn"
+            style={{
+              borderRadius: "8px",
+              padding: "10px",
+              border: "1px solid #D1D5DB",
+              background: "#F9FAFB", // Slightly gray background for disabled input
+            }}
+            disabled
+          />
+        </Form.Item>
+
+        <Form.Item
+          label="Số Điện Thoại"
+          name="phoneNumber"
+          rules={[{ required: true, message: "Vui lòng nhập số điện thoại của bạn!" }]}
+        >
+          <Input
+            placeholder="Nhập số điện thoại của bạn"
+            style={{
+              borderRadius: "8px",
+              padding: "10px",
+              border: "1px solid #D1D5DB",
+              background: "#FFFFFF",
+            }}
+          />
+        </Form.Item>
+
+        <Form.Item>
+          <Button
+            type="primary"
+            htmlType="submit"
+            style={{
+              width: "100%",
+              background: "#00796B", // Dark green for buttons
+              borderColor: "#00796B",
+              height: "45px",
+              borderRadius: "10px",
+              fontWeight: "bold",
+              transition: "transform 0.3s ease, background 0.3s ease", // Smooth hover effects
+            }}
+            onMouseEnter={(e) => (e.currentTarget.style.background = "#004D40")} // Darker green on hover
+            onMouseLeave={(e) => (e.currentTarget.style.background = "#00796B")}
+          >
+            Lưu Thay Đổi
+          </Button>
+        </Form.Item>
+      </Form>
     </div>
   );
 }

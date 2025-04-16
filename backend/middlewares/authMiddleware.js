@@ -10,8 +10,6 @@ module.exports = async (req, res, next) => {
     const user = await User.findById(decoded.id);
     if (!user) return res.status(401).json({ message: "User not found" });
 
-    if (!user.isAdmin) return res.status(403).json({ message: "Admin access required" });
-
     req.user = decoded; // Keep user info for routes
     next();
   } catch (err) {

@@ -1,94 +1,80 @@
-import React, { useContext, useState } from "react";
-import { Button } from "antd";
-import { AuthContext } from "../Contexts/AuthContext";
-import { useNavigate, Link } from "react-router-dom";
-import axios from "axios";
-import { message } from "antd";
+// src/components/ProductCard.jsx
+import React from "react";
+import { Card, Button, Typography } from "antd";
+import { Link } from "react-router-dom";
 
-export default function ProductCard({ name, price, image, productId }) {
-  const [loading, setLoading] = useState(false);
-  const { isLoggedIn } = useContext(AuthContext);
-  const navigate = useNavigate();
+const { Text } = Typography;
 
-  const addToCart = async () => {
-    if (!isLoggedIn) {
-      message.error("Please log in to add items to your cart!");
-      navigate("/login");
-      return;
-    }
-    setLoading(true);
-    try {
-      const token = localStorage.getItem("token");
-      await axios.post(
-        `${import.meta.env.VITE_API_URL}/api/cart/add`,
-        { productId, name, quantity: 1, price },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      message.success("Item added to cart!");
-    } catch (err) {
-      message.error(err.response?.data?.message || "Failed to add to cart.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const cardStyle = {
-    border: "1px solid #e0e0e0",
-    borderRadius: "10px",
-    padding: "15px",
-    textAlign: "center",
-    backgroundColor: "#fff",
-    width: "320px",
-    boxShadow: "0 4px 10px rgba(0, 0, 0, 0.05)",
-  };
-
-  const imageStyle = {
-    width: "100%",
-    height: "250px",
-    objectFit: "cover",
-    borderRadius: "8px",
-  };
-
-  const nameStyle = {
-    color: "#333",
-    fontSize: "16px",
-    fontWeight: "600",
-    margin: "10px 0",
-    whiteSpace: "nowrap",
-    overflow: "hidden",
-    textOverflow: "ellipsis",
-  };
-
-  const priceStyle = {
-    fontSize: "18px",
-    color: "#e74c3c",
-    marginBottom: "15px",
-  };
-
-  const buttonStyle = {
-    width: "100%",
-    backgroundColor: "#3498db",
-    border: "none",
-    borderRadius: "5px",
-    padding: "10px",
-    fontSize: "16px",
-  };
-
+export default function ProductCard({ productId, name, price, image }) {
   return (
-    <div style={cardStyle}>
-      <Link to={`/products/${productId}`}>
-        <img src={image} alt={name} style={imageStyle} />
-        <h3 style={nameStyle}>{name}</h3>
-        <p style={priceStyle}>${price}</p>
+    <Card
+      hoverable
+      style={{
+        borderRadius: "12px",
+        overflow: "hidden",
+        boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
+        transition: "transform 0.3s, box-shadow 0.3s",
+        "&:hover": {
+          transform: "scale(1.05)",
+          boxShadow: "0 6px 16px rgba(0, 0, 0, 0.15)",
+        },
+      }}
+      cover={
+        image ? (
+          <div
+            style={{
+              position: "relative",
+              height: "200px",
+              background: `url(${image}) center/cover no-repeat`,
+            }}
+          >
+            <div
+              style={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                background: "linear-gradient(to top, rgba(0, 0, 0, 0.3), transparent)",
+              }}
+            />
+          </div>
+        ) : (
+          <div
+            style={{
+              height: "200px",
+              background: "#f5f5f5",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <Text type="secondary">No Image</Text>
+          </div>
+        )
+      }
+    >
+      <Card.Meta
+        title={<Text strong style={{ fontSize: "18px", color: "#1a3c34" }}>{name}</Text>}
+        description={<Text style={{ fontSize: "16px", color: "#555" }}>${price}</Text>}
+      />
+      <Link to={`/product/${productId}`}>
+        <Button
+          type="primary"
+          style={{
+            marginTop: "16px",
+            width: "100%",
+            height: "40px",
+            fontSize: "14px",
+            background: "#1a3c34",
+            borderColor: "#1a3c34",
+            borderRadius: "8px",
+            transition: "all 0.3s",
+          }}
+        >
+          View Details
+        </Button>
       </Link>
-      <Button
-        type="primary"
-        onClick={addToCart}
-        disabled={loading}
-        style={buttonStyle}
-      >
-        Add to Cart
-      </Button>
-    </div>
+    </Card>
   );
 }
