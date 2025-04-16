@@ -1249,7 +1249,7 @@ export default function AdminDashboard() {
       <Sider width={250} style={{ background: "#1a3c34" }}>
         <div style={{ padding: "20px", textAlign: "center" }}>
           <Title level={4} style={{ color: "#fff", margin: 0 }}>
-            Bảng Điều Khiển Quản Trị
+            Quản Trị Viên
           </Title>
         </div>
         <Menu

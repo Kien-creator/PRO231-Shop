@@ -31,8 +31,8 @@ export default function Home() {
                 }}
               >
                 <img
-                  src="https://fake-weather-web.onrender.com/assets/VanTri.jpg"
-                  alt="Super Brand Day Ad"
+                  src="/assets/Ad1.jpg" 
+                  alt="Ad 1"
                   style={{
                     width: "100%",
                     height: "auto",
@@ -80,8 +80,8 @@ export default function Home() {
                 }}
               >
                 <img
-                  src="https://fake-weather-web.onrender.com/assets/TuanNghia.jpg"
-                  alt="Food Ad"
+                  src="/assets/Ad2.jpg" // Placeholder image for the second ad
+                  alt="Ad 2"
                   style={{
                     width: "100%",
                     height: "auto",
@@ -116,6 +116,57 @@ export default function Home() {
                   </Text>
                 </div>
               </div>
+              
+            </Link>
+          </div>
+          {/* Second Ad: Food Ad */}
+          <div style={{ position: "relative" }}>
+            <Link to="/shop">
+              <div
+                style={{
+                  position: "relative",
+                  overflow: "hidden",
+                  borderRadius: "12px",
+                }}
+              >
+                <img
+                  src="/assets/Ad3.jpg" // Placeholder image for the second ad
+                  alt="Ad 3"
+                  style={{
+                    width: "100%",
+                    height: "auto",
+                    maxHeight: "400px",
+                    objectFit: "cover",
+                    cursor: "pointer",
+                    transition: "transform 0.3s ease", // Zoom-in effect
+                  }}
+                  onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.05)")} // Zoom in on hover
+                  onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")} // Reset on hover out
+                />
+                {/* Overlay with "Shop Now" text on hover */}
+                <div
+                  style={{
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    width: "100%",
+                    height: "100%",
+                    backgroundColor: "rgba(0, 200, 83, 0.5)", // Shopee green overlay (#00C853 with opacity)
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    opacity: 0,
+                    transition: "opacity 0.3s ease",
+                  }}
+                  onMouseEnter={(e) => (e.currentTarget.style.opacity = "1")} // Show overlay on hover
+                  onMouseLeave={(e) => (e.currentTarget.style.opacity = "0")} // Hide overlay on hover out
+                >
+                  <Text style={{ color: "#fff", fontSize: "24px", fontWeight: "bold" }}>
+                    Mua Ngay
+                  </Text>
+                </div>
+              </div>
+              
             </Link>
           </div>
         </Carousel>
